@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">WNTPrototype</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">Search</string>
+    <string name="title_dashboard">Format</string>
+    <string name="title_notifications">Email</string>
+    <string name="formatData">"Format "</string>
+    <string name="EmailData">Send</string>
+    <string name="SearchData">Search</string>
 </resources>
