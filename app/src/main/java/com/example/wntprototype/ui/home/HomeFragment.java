@@ -47,8 +47,6 @@ public class HomeFragment extends Fragment {
                 new ViewModelProvider(this).get(HomeViewModel.class);
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         filterResults = root.findViewById(R.id.textView);
         filterResults.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -86,9 +84,8 @@ public class HomeFragment extends Fragment {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if(!COVIDSelected && !WESelected && !sportsSelected) {
+                        if(!COVIDSelected && !WESelected && !sportsSelected)
                             applyFilter = false;
-                        }
                         else
                             applyFilter = true;
                     }
