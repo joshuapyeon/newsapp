@@ -27,66 +27,12 @@ import com.example.wntprototype.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    TextView filterResults;
-    ArrayList<Integer> arraylist = new ArrayList<Integer>();
-    boolean[] selectedTopics;
-    boolean sportsSelected = false;
-    boolean WESelected = false;
-    boolean COVIDSelected = false;
-    String[] topics = {"Sports", "World Events", "COVID"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        filterResults = findViewById(R.id.textView);
-        filterResults.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        MainActivity.this
-                );
-                builder.setTitle("Filter Results");
-                builder.setCancelable(false);
-                builder.setMultiChoiceItems(topics, selectedTopics, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                        if(b) {
-                            if(topics[i].equals("Sports")) {
-                                sportsSelected = true;
-                            }
-                            else if(topics[i].equals("World Events")) {
-                                WESelected = true;
-                            }
-                            else {
-                                COVIDSelected = true;
-                            }
-                        }
-                        else {
-                            if(topics[i].equals("Sports")) {
-                                sportsSelected = false;
-                            }
-                            else if(topics[i].equals("World Events")) {
-                                WESelected = false;
-                            }
-                            else {
-                                COVIDSelected = false;
-                            }
-                        }
-                    }
-                });
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if(!COVIDSelected && !WESelected && !sportsSelected) {
-
-                        }
-                    }
-                });
-                builder.show();
-            }
-        });
-        selectedTopics = new boolean[topics.length];
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
