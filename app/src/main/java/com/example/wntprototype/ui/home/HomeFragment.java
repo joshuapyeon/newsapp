@@ -111,9 +111,6 @@ public class HomeFragment extends Fragment {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d("COVIDSelected", COVIDSelected + "");
-                        Log.d("WESelected", WESelected + "");
-                        Log.d("sportsSelected", sportsSelected + "");
                         if(!COVIDSelected && !WESelected && !sportsSelected ||
                         COVIDSelected && WESelected && sportsSelected)
                             applyFilter = false;
