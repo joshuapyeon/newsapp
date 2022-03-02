@@ -6,14 +6,4 @@ import androidx.lifecycle.ViewModel;
 
 public class DashboardViewModel extends ViewModel {
 
-    private final MutableLiveData<String> mText;
-
-    public DashboardViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("Someone can implement the format option here");
-    }
-
-    public LiveData<String> getText() {
-        return mText;
-    }
 }
