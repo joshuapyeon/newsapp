@@ -10,7 +10,7 @@ public class NotificationsViewModel extends ViewModel {
 
     public NotificationsViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("Someone can do the email case here");
+        mText.setValue("Input your email address and password to store your email account to send articles to others!");
     }
 
     public LiveData<String> getText() {
