@@ -3,6 +3,7 @@ package com.example.wntprototype.ui.home;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,13 @@ public class HomeFragment extends Fragment {
     boolean COVIDSelected = false;
 
     boolean applyFilter = false;
+
+    TextView Beijing;
+    TextView Ukraine;
+    TextView Paralympics;
+    TextView LebronJames;
+    TextView MLB;
+    TextView MaskMan;
     String[] topics = {"Sports", "World Events", "COVID"};
     private FragmentHomeBinding binding;
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -48,6 +56,12 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         filterResults = root.findViewById(R.id.textView);
+        Beijing = root.findViewById(R.id.Beijing);
+        Ukraine = root.findViewById(R.id.Ukraine);
+        Paralympics = root.findViewById(R.id.Paralympics);
+        LebronJames = root.findViewById(R.id.LebronJames);
+        MaskMan = root.findViewById(R.id.MaskMan);
+        MLB = root.findViewById(R.id.MLB);
         filterResults.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(root.getContext());
@@ -84,10 +98,15 @@ public class HomeFragment extends Fragment {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if(!COVIDSelected && !WESelected && !sportsSelected)
+                        Log.d("COVIDSelected", COVIDSelected + "");
+                        Log.d("WESelected", WESelected + "");
+                        Log.d("sportsSelected", sportsSelected + "");
+                        if(!COVIDSelected && !WESelected && !sportsSelected ||
+                        COVIDSelected && WESelected && sportsSelected)
                             applyFilter = false;
                         else
                             applyFilter = true;
+                        applyFilters(applyFilter);
                     }
                 });
                 builder.show();
@@ -97,6 +116,72 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Applies the filters to the keywords
+     * @param filtersApplied Boolean value that determines if to apply filters or not
+     */
+    public void applyFilters(boolean filtersApplied) {
+        Log.d("FILTERSAPPLIEd", filtersApplied+"");
+        if(!filtersApplied) {
+            Paralympics.setAlpha(1.0f);
+            Beijing.setAlpha(1.0f);
+            Ukraine.setAlpha(1.0f);
+            MLB.setAlpha(1.0f);
+            LebronJames.setAlpha(1.0f);
+            MaskMan.setAlpha(1.0f);
+            return;
+        }
+        else {
+            if(sportsSelected && WESelected && !COVIDSelected) {
+                MaskMan.setAlpha(0.0f);
+                LebronJames.setAlpha(1.0f);
+                MLB.setAlpha(1.0f);
+                Paralympics.setAlpha(1.0f);
+                Beijing.setAlpha(1.0f);
+                Ukraine.setAlpha(1.0f);
+            }
+            else if(COVIDSelected && WESelected && !sportsSelected) {
+                MLB.setAlpha(0.0f);
+                LebronJames.setAlpha(0.0f);
+                Paralympics.setAlpha(1.0f);
+                Beijing.setAlpha(1.0f);
+                Ukraine.setAlpha(1.0f);
+                MaskMan.setAlpha(1.0f);
+            }
+            else if(COVIDSelected && sportsSelected && !WESelected) {
+                Paralympics.setAlpha(0.0f);
+                Beijing.setAlpha(0.0f);
+                Ukraine.setAlpha(0.0f);
+                MLB.setAlpha(1.0f);
+                LebronJames.setAlpha(1.0f);
+                MaskMan.setAlpha(1.0f);
+            }
+            else if(COVIDSelected && !WESelected && !sportsSelected) {
+                Paralympics.setAlpha(0.0f);
+                Beijing.setAlpha(0.0f);
+                Ukraine.setAlpha(0.0f);
+                MLB.setAlpha(0.0f);
+                LebronJames.setAlpha(0.0f);
+                MaskMan.setAlpha(1.0f);
+            }
+            else if(WESelected && !sportsSelected && !COVIDSelected) {
+                LebronJames.setAlpha(0.0f);
+                MLB.setAlpha(0.0f);
+                MaskMan.setAlpha(0.0f);
+                Paralympics.setAlpha(1.0f);
+                Beijing.setAlpha(1.0f);
+                Ukraine.setAlpha(1.0f);
+            }
+            else if(sportsSelected && !WESelected && !COVIDSelected){
+                Ukraine.setAlpha(0.0f);
+                Beijing.setAlpha(0.0f);
+                Paralympics.setAlpha(0.0f);
+                MaskMan.setAlpha(0.0f);
+                MLB.setAlpha(1.0f);
+                LebronJames.setAlpha(1.0f);
+            }
+        }
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

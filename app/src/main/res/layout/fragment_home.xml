@@ -34,58 +34,61 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/MLB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView5"
-        app:layout_constraintStart_toStartOf="@+id/textView3" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="79dp"
-        android:text="TextView"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView4"
+        android:layout_marginStart="74dp"
+        android:text="MLB"
+        app:layout_constraintBaseline_toBaselineOf="@+id/Paralympics"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/Paralympics"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="58dp"
-        android:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/textView3"
+        android:layout_marginTop="64dp"
+        android:text="Paralympics"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Beijing" />
+
+    <TextView
+        android:id="@+id/LebronJames"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="49dp"
+        android:text="Lebron James"
+        app:layout_constraintBaseline_toBaselineOf="@+id/Beijing"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/Ukraine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="63dp"
+        android:text="Ukraine"
+        app:layout_constraintBaseline_toBaselineOf="@+id/Beijing"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/Paralympics" />
+
+    <TextView
+        android:id="@+id/Beijing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="73dp"
+        android:text="Beijing"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/MaskMan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="45dp"
-        android:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:text="TextView"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView4"
-        app:layout_constraintStart_toEndOf="@+id/textView4" />
-
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:text="TextView"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView5"
-        app:layout_constraintStart_toEndOf="@+id/textView5" />
+        android:layout_marginEnd="39dp"
+        android:text="Mask Mandate"
+        app:layout_constraintBaseline_toBaselineOf="@+id/Paralympics"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
