@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.*;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -40,6 +40,8 @@ public class HomeFragment extends Fragment {
 
     boolean applyFilter = false;
 
+    Button searchButton;
+
     TextView Beijing;
     TextView Ukraine;
     TextView Paralympics;
@@ -47,6 +49,7 @@ public class HomeFragment extends Fragment {
     TextView MLB;
     TextView MaskMan;
     String[] topics = {"Sports", "World Events", "COVID"};
+    String displayFilters;
     private FragmentHomeBinding binding;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -55,6 +58,7 @@ public class HomeFragment extends Fragment {
                 new ViewModelProvider(this).get(HomeViewModel.class);
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        searchButton = root.findViewById(R.id.button);
         filterResults = root.findViewById(R.id.textView);
         Beijing = root.findViewById(R.id.Beijing);
         Ukraine = root.findViewById(R.id.Ukraine);
@@ -62,6 +66,15 @@ public class HomeFragment extends Fragment {
         LebronJames = root.findViewById(R.id.LebronJames);
         MaskMan = root.findViewById(R.id.MaskMan);
         MLB = root.findViewById(R.id.MLB);
+        displayFilters = "";
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(root.getContext(), "Searching for headlines",Toast.LENGTH_LONG).show();
+            }
+        });
+        //Creates the filter menu
         filterResults.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(root.getContext());
