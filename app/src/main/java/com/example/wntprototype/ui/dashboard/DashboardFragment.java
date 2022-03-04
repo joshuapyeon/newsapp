@@ -1,4 +1,3 @@
-
 package com.example.wntprototype.ui.dashboard;
 
         import android.graphics.Color;
@@ -79,7 +78,7 @@ public class DashboardFragment extends Fragment {
         temp.add("FOMO");
         temp.add("Lit");
         for(int i = 0; i < temp.size(); i++){
-            toShow.add("#" + i + ":  " + temp.get(i).toString());
+            toShow.add("#" + (i+1) + ":  " + temp.get(i).toString());
         }
 
         //this is what actually shows the information and gives the given interactions
@@ -88,7 +87,7 @@ public class DashboardFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Snackbar sb = Snackbar.make(root, "Rank #" + i + ": " + temp.get(i).toString(), Snackbar.LENGTH_SHORT);
+                Snackbar sb = Snackbar.make(root, "Rank #" + (i+1) + ": " + temp.get(i).toString(), Snackbar.LENGTH_SHORT);
                 sb.setAction("More Info", new View.OnClickListener(){
                     @Override
                     public void onClick(View view) {
