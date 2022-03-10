@@ -21,11 +21,12 @@ public class MainActivity extends AppCompatActivity {
     private final boolean[] selectedSources = { true, true, true };
     private final String[] visualizations = { "List", "Graph", "Word Map" };
     private int currVisualization = 0;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        com.example.wntprototype.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         this.findViewById(R.id.search_bar).setOnClickListener((u1) -> MainActivity.this.findViewById(R.id.filter_view).setVisibility(View.VISIBLE));

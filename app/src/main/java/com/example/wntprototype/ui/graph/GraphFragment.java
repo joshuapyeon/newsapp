@@ -1,4 +1,4 @@
-package com.example.wntprototype.ui.dashboard;
+package com.example.wntprototype.ui.graph;
 
         import android.graphics.Color;
         import android.os.Bundle;
@@ -7,35 +7,30 @@ package com.example.wntprototype.ui.dashboard;
         import android.view.ViewGroup;
         import android.widget.AdapterView;
         import android.widget.ArrayAdapter;
-        import android.widget.ImageView;
         import android.widget.ListView;
         import android.widget.Spinner;
-        import android.widget.TextView;
         import android.widget.Toast;
 
         import androidx.annotation.NonNull;
         import androidx.fragment.app.Fragment;
         import androidx.lifecycle.ViewModelProvider;
 
-        import com.example.wntprototype.MainActivity;
         import com.example.wntprototype.R;
-        import com.example.wntprototype.databinding.FragmentDashboardBinding;
+        import com.example.wntprototype.databinding.FragmentGraphBinding;
         import com.google.android.material.snackbar.Snackbar;
-
-        import org.w3c.dom.DOMStringList;
 
         import java.util.ArrayList;
 
-public class DashboardFragment extends Fragment {
+public class GraphFragment extends Fragment {
 
-    private FragmentDashboardBinding binding;
+    private FragmentGraphBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+        GraphViewModel graphViewModel =
+                new ViewModelProvider(this).get(GraphViewModel.class);
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentGraphBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         //ListView Implementation AKA the list displayed
