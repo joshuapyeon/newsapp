@@ -32,5 +32,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        this.findViewById(R.id.search_bar).setOnClickListener((u1) -> {
+            //Open filter menu
+        });
+
+        this.findViewById(R.id.visualize_button).setOnClickListener((u1) -> {
+            //Open visualize dropdown
+        });
+
+        this.findViewById(R.id.share_button).setOnClickListener((u1) -> {
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+
+            // This will be the type of content; maybe PNG/JPEG image?
+            sharingIntent.setType("text/plain");
+
+            // Body of the content; maybe different types later
+            String shareBody = "The stuff we wanted to share";
+            String shareSubject = "Subject of the stuff we wanted to share";
+
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+            sharingIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
+            startActivity(Intent.createChooser(sharingIntent, "Share using"));
+        });
     }
 }
