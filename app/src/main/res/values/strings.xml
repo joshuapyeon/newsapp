@@ -7,6 +7,14 @@
     <string name="EmailData">Send</string>
     <string name="SearchData">Search</string>
     <string name ="Default">No Filter</string>
+    <string name="filter_hint">Filter by Topic</string>
+    <string name="filter">Topics</string>
+    <string name="filter_hint_source">Filter by Source</string>
+    <string name="filter_source">Sources</string>
+    <string name="heading_filter">Filter Results</string>
+    <string name="button_search">Search</string>
+    <string name="visualize_desc">Change Data Visualization</string>
+    <string name="x">X</string>
     <string-array name ="keywords">
         <item> Ukraine </item>
         <item> Japan </item>
