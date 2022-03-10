@@ -1,6 +1,5 @@
 package com.example.wntprototype;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -8,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.view.View;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.navigation.fragment.NavHostFragment;
+
 import android.widget.Toast;
 
 import com.example.wntprototype.databinding.ActivityMainBinding;
@@ -17,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
     private final boolean[] selectedTopics = { true, true, true };
     private final String[] sources = { "CNN", "NBC", "FOX" };
     private final boolean[] selectedSources = { true, true, true };
+    private final String[] visualizations = { "List", "Graph", "Word Map" };
+    private int currVisualization = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +61,27 @@ public class MainActivity extends AppCompatActivity {
         });
 
         this.findViewById(R.id.visualize_button).setOnClickListener((u1) -> {
-            //Open visualize dropdown
+            AlertDialog.Builder builder = new AlertDialog.Builder(binding.getRoot().getContext());
+
+            builder.setTitle("Choose Visualization");
+            builder.setCancelable(false);
+            builder.setSingleChoiceItems(visualizations, currVisualization, (v1, v2) -> currVisualization = v2);
+            builder.setPositiveButton("OK", (v1, v2) -> {
+                int dest;
+                switch (currVisualization) {
+                    case 0:
+                        dest = R.id.navigation_home;
+                        break;
+                    case 1:
+                        dest = R.id.navigation_dashboard;
+                        break;
+                    default:
+                        dest = R.id.navigation_notifications;
+                        break;
+                }
+                ((NavHostFragment)((FragmentContainerView)this.findViewById(R.id.nav_host_fragment_activity_main)).getFragment()).getNavController().navigate(dest);
+            });
+            builder.show();
         });
 
         this.findViewById(R.id.share_button).setOnClickListener((u1) -> {
