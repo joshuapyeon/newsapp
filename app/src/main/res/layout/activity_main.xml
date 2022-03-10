@@ -25,7 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:background="@color/design_default_color_background"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/visualize_button"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/share_button"
@@ -36,6 +37,16 @@
         android:foreground="@drawable/share_button"
         android:foregroundGravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/visualize_button"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:background="@color/design_default_color_primary"
+        android:foreground="@drawable/visualize_button"
+        android:foregroundGravity="center"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,27 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24.0"
+    android:viewportHeight="24.0">
+    <!--Horizontal bars-->
+    <path
+        android:fillColor="@color/design_default_color_background"
+        android:pathData="M3,7h18L21,5L3,5v" />
+    <path
+        android:fillColor="@color/design_default_color_background"
+        android:pathData="M3,13h18L21,11L3,11v" />
+    <path
+        android:fillColor="@color/design_default_color_background"
+        android:pathData="M3,19h18L21,17L3,17v" />
+
+    <!--Vertical bars-->
+    <path
+        android:fillColor="@color/design_default_color_background"
+        android:pathData="M5,8h2L7,4L5,4v" />
+    <path
+        android:fillColor="@color/design_default_color_background"
+        android:pathData="M17,14h2L19,10L17,10v" />
+    <path
+        android:fillColor="@color/design_default_color_background"
+        android:pathData="M11,20h2L13,16L11,16v" />
+</vector>
