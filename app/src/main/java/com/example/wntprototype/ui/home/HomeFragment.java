@@ -41,7 +41,6 @@ public class HomeFragment extends Fragment {
     boolean applyFilter = false;
 
     Button searchButton;
-
     TextView Beijing;
     TextView Ukraine;
     TextView Paralympics;
@@ -66,8 +65,7 @@ public class HomeFragment extends Fragment {
         LebronJames = root.findViewById(R.id.LebronJames);
         MaskMan = root.findViewById(R.id.MaskMan);
         MLB = root.findViewById(R.id.MLB);
-        displayFilters = "";
-
+        displayFilters = ""sef
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
