@@ -1,7 +1,6 @@
-package com.example.wntprototype.ui.notifications;
+package com.example.wntprototype.ui.wordmap;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,24 +13,23 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.wntprototype.databinding.FragmentNotificationsBinding;
 import com.example.wntprototype.R;
+import com.example.wntprototype.databinding.FragmentWordMapBinding;
 
 
-public class NotificationsFragment extends Fragment {
-
-    private FragmentNotificationsBinding binding;
+public class WordMapFragment extends Fragment {
+    private FragmentWordMapBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NotificationsViewModel notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
+        WordMapViewModel wordMapViewModel =
+                new ViewModelProvider(this).get(WordMapViewModel.class);
 
-        binding = FragmentNotificationsBinding.inflate(inflater, container, false);
+        binding = FragmentWordMapBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        wordMapViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         Button confirmButton = root.findViewById(R.id.button);
         EditText emailText = (EditText) root.findViewById(R.id.editTextTextEmailAddress3);

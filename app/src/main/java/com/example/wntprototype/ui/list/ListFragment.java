@@ -1,36 +1,26 @@
-package com.example.wntprototype.ui.home;
+package com.example.wntprototype.ui.list;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.widget.*;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+
 import android.widget.TextView;
 
-import com.example.wntprototype.MainActivity;
 import com.example.wntprototype.R;
-import com.example.wntprototype.databinding.FragmentHomeBinding;
+import com.example.wntprototype.databinding.FragmentListBinding;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment {
+public class ListFragment extends Fragment {
     TextView filterResults;
     ArrayList<Integer> arraylist = new ArrayList<Integer>();
     boolean[] selectedTopics;
@@ -40,6 +30,8 @@ public class HomeFragment extends Fragment {
 
     boolean applyFilter = false;
 
+    Button searchButton;
+
     TextView Beijing;
     TextView Ukraine;
     TextView Paralympics;
@@ -47,14 +39,16 @@ public class HomeFragment extends Fragment {
     TextView MLB;
     TextView MaskMan;
     String[] topics = {"Sports", "World Events", "COVID"};
-    private FragmentHomeBinding binding;
+    String displayFilters;
+    private FragmentListBinding binding;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        ListViewModel listViewModel =
+                new ViewModelProvider(this).get(ListViewModel.class);
+        binding = FragmentListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        searchButton = root.findViewById(R.id.button);
         filterResults = root.findViewById(R.id.textView);
         Beijing = root.findViewById(R.id.Beijing);
         Ukraine = root.findViewById(R.id.Ukraine);
@@ -62,6 +56,15 @@ public class HomeFragment extends Fragment {
         LebronJames = root.findViewById(R.id.LebronJames);
         MaskMan = root.findViewById(R.id.MaskMan);
         MLB = root.findViewById(R.id.MLB);
+        displayFilters = "";
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(root.getContext(), "Searching for headlines",Toast.LENGTH_LONG).show();
+            }
+        });
+        //Creates the filter menu
         filterResults.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(root.getContext());
@@ -98,9 +101,6 @@ public class HomeFragment extends Fragment {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d("COVIDSelected", COVIDSelected + "");
-                        Log.d("WESelected", WESelected + "");
-                        Log.d("sportsSelected", sportsSelected + "");
                         if(!COVIDSelected && !WESelected && !sportsSelected ||
                         COVIDSelected && WESelected && sportsSelected)
                             applyFilter = false;
