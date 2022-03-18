@@ -1,4 +1,4 @@
-package com.example.wntprototype.APIWrappers;
+package com.example.wntprototype.APIWrappers.NewsAPI;
 
 public enum Country {
     ae,
