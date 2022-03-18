@@ -107,17 +107,19 @@ public class MainActivity extends AppCompatActivity {
 
         //Builds the search.  Right now, the only necessary parameter is the query, or the keyword
         //in the search.
-        APISearch search = new APISearch();
-        search.setQuery("tesla");
 
-        try {
+//        APISearch search = new APISearch();
+//        search.setQuery("tesla");
+
+//        try {
             //All of the API Data pulls use an AsyncTask because it throws an error if there is a
             //network call on the main thread, so this gets the list of APIData
-            List<APIData> data = new GTSWrapper().execute(search).get();
-            data.get(0);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+
+//            List<APIData> data = new GTSWrapper().execute(search).get();
+//            data.get(0);
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
     }
 
     private void executeSearch(String keyword) {
