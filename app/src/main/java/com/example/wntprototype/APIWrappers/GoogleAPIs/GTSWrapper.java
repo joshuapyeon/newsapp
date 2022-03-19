@@ -6,6 +6,10 @@ import com.example.wntprototype.APIWrappers.APIData;
 import com.example.wntprototype.APIWrappers.APISearch;
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,33 +47,17 @@ public class GTSWrapper extends AsyncTask<APISearch, Void, List<APIData>> {
      */
     private List<APIData> buildDataList(String text) {
         List<APIData> toReturn = new ArrayList<APIData>();
-        int semicolonsLeft = 4;
-        int index = 0;
-        while (semicolonsLeft > 0){
-            if(text.charAt(index) == ':'){
-                semicolonsLeft--;
-                index++;
-            }
-            index++;
-        }
-        while(index < text.length()){
-            if (text.charAt(index) == '"'){
+        try {
+            JSONObject data = new JSONObject(text);
+            JSONArray results = data.optJSONArray("results");
+            for(int i = 0; i < results.length(); i++){
                 GTSData temp = new GTSData();
-                temp.content = "";
-                Boolean flag = true;
-                index++;
-                while(flag){
-                    if(text.charAt(index) == '"'){
-                        flag = false;
-                    }else {
-                        temp.content += text.charAt(index);
-                        index++;
-                    }
-                }
+                temp.content = results.optString(i);
                 temp.setToParse();
                 toReturn.add(temp);
             }
-            index++;
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
         return toReturn;
     }
