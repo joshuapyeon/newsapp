@@ -1,6 +1,9 @@
-package com.example.wntprototype.APIWrappers;
+package com.example.wntprototype.APIWrappers.NewsAPI;
 
 import android.os.AsyncTask;
+
+import com.example.wntprototype.APIWrappers.APIData;
+import com.example.wntprototype.APIWrappers.APISearch;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,21 +18,28 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsAPIWrapper extends AsyncTask<APISearch, Void, List<ArticleData>> {
+/**
+ * THIS CLASS IS NOT FUNCTIONAL, IT WILL RETURN NULL!!!!
+ *
+ * This class gets data from NewsAPI and puts it into a helpful data structure.
+ */
+public class NewsAPIWrapper extends AsyncTask<APISearch, Void, List<APIData>> {
 
-    public NewsAPIWrapper(){
-    }
+    /**
+     * The API Key.
+     */
+    private final String api_key = "f0ff0e93fe38440b8bd676c8b3fe962c";
+
 
     @Override
-    protected List<ArticleData> doInBackground(APISearch... apiSearches) {
-        return GetNews(apiSearches[0]);
-    }
-
-    private List<ArticleData> GetNews(APISearch search){
+    /**
+     * This method gets the API Data and formats it correctly and sends it back to the main thread.
+     */
+    protected List<APIData> doInBackground(APISearch... apiSearches) {
         URL url = null;
         HttpURLConnection urlConnection = null;
         try{
-            url = buildURL(search);
+            url = buildURL(apiSearches[0]);
             urlConnection = (HttpURLConnection) url.openConnection();
             int status = urlConnection.getResponseCode();
             String response = StreamToString(urlConnection.getInputStream());
@@ -42,11 +52,17 @@ public class NewsAPIWrapper extends AsyncTask<APISearch, Void, List<ArticleData>
         return null;
     }
 
-    private ArrayList<ArticleData> buildArticleList(String response) {
+    /**
+     * This function builds the data structure of ArticleData, and converts it to list of
+     * APIData.
+     * @param response The String of the JSON file retrieved from the API data pull
+     * @return A list of APIData with news information
+     */
+    private ArrayList<APIData> buildArticleList(String response) {
         JSONObject temp = null;
         try{
             temp = new JSONObject(response);
-            ArrayList<ArticleData> toReturn = new ArrayList<ArticleData>();
+            ArrayList<APIData> toReturn = new ArrayList<APIData>();
             JSONArray articles = temp.optJSONArray("articles");
             for(int i = 0; i < articles.length(); i++){
                 JSONObject article = articles.optJSONObject(i);
@@ -59,6 +75,7 @@ public class NewsAPIWrapper extends AsyncTask<APISearch, Void, List<ArticleData>
                 ad.urlToImage = article.optString("urlToImage");
                 ad.publishDate = article.optString("publishedAt");
                 ad.content = article.optString("content");
+                ad.setToParse();
                 toReturn.add(ad);
             }
             return toReturn;
@@ -68,24 +85,30 @@ public class NewsAPIWrapper extends AsyncTask<APISearch, Void, List<ArticleData>
         return null;
     }
 
+    /**
+     * This method builds the URL for the API data pull
+     * @param search The Search parameters.
+     * @return The correctly formatted URL.
+     * @throws MalformedURLException Throws if there is an exception in the url construction.
+     */
     private URL buildURL(APISearch search) throws MalformedURLException {
         String tempUrl = "https://newsapi.org/v2/top-headlines?";
         String andSymbol = "";
-        if(search.hasQuery){
-            tempUrl += andSymbol + "q=" + search.query;
+        if(search.hasQuery()){
+            tempUrl += andSymbol + "q=" + search.getQuery();
             andSymbol = "&";
         }
-        if(search.hasCountry){
-            tempUrl += andSymbol + "country=" + search.country.toString();
-            andSymbol = "&";
-        }
+//        if(search.hasCountry){
+//            tempUrl += andSymbol + "country=" + search.country.toString();
+//            andSymbol = "&";
+//        }
 //        if(search.hasSource){
 //            tempUrl += andSymbol + "sources=" + search.source;
 //        }
-        if(search.hasCategory){
-            tempUrl += andSymbol + "category=" + search.category.toString();
-            andSymbol = "&";
-        }
+//        if(search.hasCategory){
+//            tempUrl += andSymbol + "category=" + search.category.toString();
+//            andSymbol = "&";
+//        }
 //        if(search.hasDomain){
 //            tempUrl += andSymbol + "domains=" + search.domain;
 //            andSymbol = "&";
@@ -94,12 +117,17 @@ public class NewsAPIWrapper extends AsyncTask<APISearch, Void, List<ArticleData>
 //            tempUrl += andSymbol + "language=" + search.language;
 //            andSymbol = "&";
 //        }
-//        tempUrl += andSymbol + "apiKey=f0ff0e93fe38440b8bd676c8b3fe962c";
-        tempUrl += andSymbol +  "apiKey=f0ff0e93fe38440b8bd676c8b3fe962c";
+        tempUrl += andSymbol +  "apiKey=" + api_key;
 
         return new URL(tempUrl);
     }
 
+    /**
+     * Converts the URL connection Stream into a JSON string to be formatted.
+     * @param stream The Stream of Data from the API data pull.
+     * @return A String of all the data.
+     * @throws IOException If there is an error with the BufferedReader construction.
+     */
     private String StreamToString(InputStream stream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
         String data;

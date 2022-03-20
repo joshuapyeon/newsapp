@@ -12,7 +12,13 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import android.widget.Toast;
 
+import com.example.wntprototype.APIWrappers.APIData;
+import com.example.wntprototype.APIWrappers.APISearch;
+import com.example.wntprototype.APIWrappers.GoogleAPIs.GTSWrapper;
+import com.example.wntprototype.APIWrappers.WebSearchAPI.WebSearchWrapper;
 import com.example.wntprototype.databinding.ActivityMainBinding;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private final String[] topics = { "COVID", "Sports", "World Events" };
@@ -99,6 +105,22 @@ public class MainActivity extends AppCompatActivity {
             sharingIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
             startActivity(Intent.createChooser(sharingIntent, "Share using"));
         });
+
+//        Builds the search.  Right now, the only necessary parameter is the query, or the keyword
+//        in the search.
+
+        APISearch search = new APISearch();
+        search.setQuery("tesla");
+
+        try {
+//            All of the API Data pulls use an AsyncTask because it throws an error if there is a
+//            network call on the main thread, so this gets the list of APIData
+
+//            List<APIData> data = new WebSearchWrapper().execute(search).get();
+//            data.get(0);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void executeSearch(String keyword) {
