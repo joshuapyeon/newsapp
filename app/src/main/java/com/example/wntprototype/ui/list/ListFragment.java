@@ -2,6 +2,7 @@ package com.example.wntprototype.ui.list;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.example.wntprototype.APIWrappers.APIData;
 import com.example.wntprototype.APIWrappers.APISearch;
 import com.example.wntprototype.APIWrappers.WebSearchAPI.WebSearchData;
 import com.example.wntprototype.APIWrappers.WebSearchAPI.WebSearchWrapper;
+import com.example.wntprototype.DataCache;
 import com.example.wntprototype.R;
 import com.example.wntprototype.databinding.FragmentListBinding;
 import com.example.wntprototype.databinding.FragmentWordMapBinding;
@@ -28,7 +30,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class ListFragment extends Fragment {
-    APISearch search = new APISearch();
+    DataCache cache = DataCache.getCache();
     List<APIData> searchList;
     List<String> apiToStringList = new ArrayList<String>();
     private FragmentListBinding binding;
@@ -40,24 +42,18 @@ public class ListFragment extends Fragment {
         binding = FragmentListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         listFormat = root.findViewById(R.id.listFormat);
-        search.setQuery("tesla");
-        {
-            try {
-                searchList = new WebSearchWrapper().execute(search).get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        //TODO: Parse the APIData as a string.
-        int numID = 0;
-        for(APIData api : searchList) {
-            apiToStringList.add("#" + numID++ + ": " + api.getToParse());
-        }
 
-        arrayAdapter = new ArrayAdapter(root.getContext(), android.R.layout.simple_list_item_1, apiToStringList);
-        listFormat.setAdapter(arrayAdapter);
+        if(cache.hasData()) {
+            searchList = DataCache.getCache().getData();
+
+            //TODO: Parse the APIData as a string.
+            int numID = 0;
+            for (APIData api : searchList) {
+                apiToStringList.add("#" + numID++ + ": " + api.getToParse());
+            }
+            arrayAdapter = new ArrayAdapter(root.getContext(), android.R.layout.simple_list_item_1, apiToStringList);
+            listFormat.setAdapter(arrayAdapter);
+        }
         return root;
     }
 
