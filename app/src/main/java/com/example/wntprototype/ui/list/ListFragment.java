@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.example.wntprototype.APIWrappers.APIData;
 import com.example.wntprototype.APIWrappers.APISearch;
-import com.example.wntprototype.APIWrappers.GoogleAPIs.GTSWrapper;
 import com.example.wntprototype.APIWrappers.WebSearchAPI.WebSearchData;
 import com.example.wntprototype.APIWrappers.WebSearchAPI.WebSearchWrapper;
 import com.example.wntprototype.R;
@@ -41,10 +40,10 @@ public class ListFragment extends Fragment {
         binding = FragmentListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         listFormat = root.findViewById(R.id.listFormat);
-        search.setQuery("Ukraine");
+        search.setQuery("tesla");
         {
             try {
-                searchList = new GTSWrapper().execute(search).get();
+                searchList = new WebSearchWrapper().execute(search).get();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {

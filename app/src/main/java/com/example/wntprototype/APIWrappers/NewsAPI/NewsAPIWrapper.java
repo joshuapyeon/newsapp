@@ -66,7 +66,7 @@ public class NewsAPIWrapper extends AsyncTask<APISearch, Void, List<APIData>> {
             JSONArray articles = temp.optJSONArray("articles");
             for(int i = 0; i < articles.length(); i++){
                 JSONObject article = articles.optJSONObject(i);
-                ArticleData ad = new ArticleData();
+                NewsAPIData ad = new NewsAPIData();
                 ad.author = article.optString("author");
                 ad.title = article.optString("title");
                 ad.sourceName = article.optJSONObject("source").optString("name");

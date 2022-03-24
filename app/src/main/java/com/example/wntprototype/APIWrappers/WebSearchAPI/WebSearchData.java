@@ -8,7 +8,7 @@ public class WebSearchData extends APIData {
     public String url;
     public String body;
     public String snippet;
-    public String provider;
+    public String source;
 
 
     @Override
