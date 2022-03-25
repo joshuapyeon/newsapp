@@ -13,12 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.wntprototype.APIWrappers.APIData;
-import com.example.wntprototype.APIWrappers.APISearch;
-import com.example.wntprototype.APIWrappers.GoogleAPIs.TrendingWrapper;
 import com.example.wntprototype.DataCache;
 import com.example.wntprototype.R;
 import com.example.wntprototype.databinding.FragmentGraphBinding;
-import com.example.wntprototype.databinding.FragmentListBinding;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -27,7 +24,6 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class GraphFragment extends Fragment {
 
@@ -68,9 +64,9 @@ public class GraphFragment extends Fragment {
 
     //sets y-axis data points
     private void getData() {
-        float value = 20;
-        for (int i = 3; i > 0; i--) {
-            value = value + 5;
+        float value = 5;
+        for (int i = 5; i > 0; i--) {
+            value = value + 1;
             barEntries.add(new BarEntry(value, i));
         }
     }
