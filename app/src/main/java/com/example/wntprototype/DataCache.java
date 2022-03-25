@@ -9,7 +9,7 @@ public class DataCache {
     /**
      * Singleton Instance that has a global DataCache.
      */
-    private static DataCache cache = new DataCache();
+    private static final DataCache cache = new DataCache();
 
     /**
      * The data for all the classes to access
@@ -24,19 +24,30 @@ public class DataCache {
     /**
      * Private constructor
      */
-    private DataCache(){
+    private DataCache() {
+    }
+
+    /**
+     * Public accessor to the Singleton class
+     *
+     * @return The instance of DataCache
+     */
+    public static DataCache getCache() {
+        return cache;
     }
 
     /**
      * This gives access to the variable saying if the cache has data.
+     *
      * @return Says if there is data in the cache
      */
-    public Boolean hasData(){
+    public Boolean hasData() {
         return dataNull;
     }
 
     /**
      * Gives access to the Cached data
+     *
      * @return The Data from the sources
      */
     public List<APIData> getData() {
@@ -45,10 +56,11 @@ public class DataCache {
 
     /**
      * Sets the data for global use.
+     *
      * @param data The data from the API data pull.
      */
     public void setData(List<APIData> data) {
-        if(data != null) {
+        if (data != null) {
             this.data = data;
             dataNull = true;
         }
@@ -57,16 +69,8 @@ public class DataCache {
     /**
      * Clears the Data in the Cache
      */
-    public void clearData(){
+    public void clearData() {
         data = null;
         dataNull = false;
-    }
-
-    /**
-     * Public accessor to the Singleton class
-     * @return The instance of DataCache
-     */
-    public static DataCache getCache() {
-        return cache;
     }
 }

@@ -1,21 +1,18 @@
 package com.example.wntprototype;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import android.content.Intent;
-import android.view.View;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.widget.Toast;
-
 import com.example.wntprototype.APIWrappers.APIData;
 import com.example.wntprototype.APIWrappers.APISearch;
-import com.example.wntprototype.APIWrappers.GoogleAPIs.GTSWrapper;
-import com.example.wntprototype.APIWrappers.GoogleAPIs.TrendingWrapper;
 import com.example.wntprototype.APIWrappers.WebSearchAPI.WebSearchWrapper;
 import com.example.wntprototype.databinding.ActivityMainBinding;
 
@@ -111,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
     private void executeSearch(String keyword) {
         //Requires Backend...
         this.findViewById(R.id.filter_view).setVisibility(View.GONE);
-        ((SearchView)this.findViewById(R.id.search_bar)).setQuery("", false);
+        ((SearchView) this.findViewById(R.id.search_bar)).setQuery("", false);
         for (int i = 0; i < this.selectedTopics.length; i++)
             selectedTopics[i] = true;
         for (int i = 0; i < this.selectedSources.length; i++)
@@ -131,14 +128,14 @@ public class MainActivity extends AppCompatActivity {
 //            }else if(){
 //                data = new WebSearchWrapper().execute(search).get();
 //            }else{
-                data = new WebSearchWrapper().execute(search).get();
+            data = new WebSearchWrapper().execute(search).get();
 //            }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        if(data == null){
+        if (data == null) {
             Toast.makeText(this.getBaseContext(), "Search failed", Toast.LENGTH_LONG).show();
-        }else{
+        } else {
             cache.setData(data);
             Toast.makeText(this.getBaseContext(), "Search Succeeded", Toast.LENGTH_LONG).show();
         }
