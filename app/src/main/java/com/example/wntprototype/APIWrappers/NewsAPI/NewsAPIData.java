@@ -2,7 +2,7 @@ package com.example.wntprototype.APIWrappers.NewsAPI;
 
 import com.example.wntprototype.APIWrappers.APIData;
 
-public class ArticleData extends APIData {
+public class NewsAPIData extends APIData {
     public String sourceName;
     public String author;
     public String title;

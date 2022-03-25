@@ -8,7 +8,6 @@ import com.example.wntprototype.APIWrappers.APISearch;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +19,9 @@ import okhttp3.Response;
  * This gives the top trending stories
  */
 public class WebSearchWrapper extends AsyncTask<APISearch, Void, List<APIData>> {
+
+    private final String api_key = "0befbe4810mshf7b6de507ca3575p1eadedjsn2080a980ab3d";
+
     @Override
     protected List<APIData> doInBackground(APISearch... apiSearches) {
         OkHttpClient client = new OkHttpClient();
@@ -28,7 +30,7 @@ public class WebSearchWrapper extends AsyncTask<APISearch, Void, List<APIData>> 
                 .url("https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/search/TrendingNewsAPI?pageNumber=1&pageSize=10&withThumbnails=false&location=us")
                 .get()
                 .addHeader("x-rapidapi-host", "contextualwebsearch-websearch-v1.p.rapidapi.com")
-                .addHeader("x-rapidapi-key", "0befbe4810mshf7b6de507ca3575p1eadedjsn2080a980ab3d")
+                .addHeader("x-rapidapi-key", api_key)
                 .build();
 
         List<APIData> toReturn = new ArrayList<APIData>();
@@ -44,7 +46,7 @@ public class WebSearchWrapper extends AsyncTask<APISearch, Void, List<APIData>> 
                 temp.description = article.optString("description");
                 temp.snippet = article.optString("snippet");
                 temp.url = article.optString("url");
-                temp.provider = article.optJSONObject("provider").optString("name");
+                temp.source = article.optJSONObject("provider").optString("name");
                 temp.setToParse();
                 toReturn.add(temp);
             }
