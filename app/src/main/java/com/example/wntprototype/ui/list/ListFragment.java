@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.wntprototype.APIWrappers.APIData;
 import com.example.wntprototype.APIWrappers.APISearch;
+import com.example.wntprototype.APIWrappers.GoogleAPIs.TrendingWrapper;
 import com.example.wntprototype.APIWrappers.WebSearchAPI.WebSearchWrapper;
 import com.example.wntprototype.DataCache;
 import com.example.wntprototype.R;
@@ -52,7 +53,7 @@ public class ListFragment extends Fragment {
         }
         else {
             try {
-                searchList = new WebSearchWrapper().execute(search).get();
+                searchList = new TrendingWrapper().execute(search).get();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
