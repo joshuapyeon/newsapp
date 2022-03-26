@@ -43,7 +43,7 @@ public class GraphFragment extends Fragment {
         //getActivity().setContentView(R.layout.fragment_graph);
 
         //barChart = getActivity().findViewById(R.id.bargraph);
-        barChart = root.findViewById(R.id.bargraph);
+        barChart = (BarChart) root.findViewById(R.id.bargraph);
         getData();
         if (cache.hasData()) {
             setData();
@@ -65,6 +65,7 @@ public class GraphFragment extends Fragment {
     //sets y-axis data points
     private void getData() {
         float value = 5;
+        //data = cache.getData();
         for (int i = 5; i > 0; i--) {
             value = value + 1;
             barEntries.add(new BarEntry(value, i));
@@ -77,7 +78,8 @@ public class GraphFragment extends Fragment {
         for (APIData myData : data) {
             headlinesList.add(myData.getToParse());
             //set.add(new BarDataSet(barEntries, myData.getToParse()));
-            BarDataSet forHeadlines = new BarDataSet(barEntries, myData.getToParse());
+            int storeIndex = myData.getToParse().indexOf(" ");
+            BarDataSet forHeadlines = new BarDataSet(barEntries, myData.getToParse().substring(0, storeIndex));
             forHeadlines.setColors(ColorTemplate.JOYFUL_COLORS);
             set.add(forHeadlines);
         }
