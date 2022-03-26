@@ -5,10 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.graph.GraphFragment">
 
-    <com.github.mikephil.charting.charts.BarChart
+
+<com.github.mikephil.charting.charts.BarChart
         android:id="@+id/bargraph"
         android:layout_width="match_parent"
         android:layout_height="400dp"></com.github.mikephil.charting.charts.BarChart>
+
 
 </RelativeLayout>
 

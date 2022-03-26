@@ -1,6 +1,5 @@
 package com.example.wntprototype.ui.graph;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,7 +28,7 @@ public class GraphFragment extends Fragment {
 
     final private DataCache cache = DataCache.getCache();
     BarChart barChart;
-    private final Activity implementActivity = getActivity();
+    //private final Activity implementActivity = getActivity();
     ArrayList headlinesList = new ArrayList();
     private FragmentGraphBinding binding;
     ArrayList barEntries = new ArrayList();
@@ -41,11 +40,12 @@ public class GraphFragment extends Fragment {
         binding = FragmentGraphBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        getActivity().setContentView(R.layout.fragment_graph);
+        //getActivity().setContentView(R.layout.fragment_graph);
 
-        barChart = getActivity().findViewById(R.id.bargraph);
+        //barChart = getActivity().findViewById(R.id.bargraph);
+        barChart = root.findViewById(R.id.bargraph);
         getData();
-        if(cache.hasData()) {
+        if (cache.hasData()) {
             setData();
             BarDataSet barDataSetY = new BarDataSet(barEntries, "Ranks");
             BarDataSet barDataSetX = new BarDataSet(barEntries, "Headlines");
@@ -76,7 +76,10 @@ public class GraphFragment extends Fragment {
         data = cache.getData();
         for (APIData myData : data) {
             headlinesList.add(myData.getToParse());
-            set.add(new BarDataSet(barEntries, myData.getToParse()));
+            //set.add(new BarDataSet(barEntries, myData.getToParse()));
+            BarDataSet forHeadlines = new BarDataSet(barEntries, myData.getToParse());
+            forHeadlines.setColors(ColorTemplate.JOYFUL_COLORS);
+            set.add(forHeadlines);
         }
     }
 
