@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.text.Editable;
 import android.view.View;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
@@ -29,6 +30,9 @@ import com.example.wntprototype.ui.wordmap.WordMapFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -77,6 +81,18 @@ public class MainActivity extends AppCompatActivity {
 
         //Sets the onClickListener for the
         findViewById(R.id.visualize_button).setOnClickListener((u1) -> {
+            /*File file = new File(this.getFilesDir().getPath() + "/input.txt");
+            try {
+                file.createNewFile();
+                if (file.setWritable(true)) {
+                    PrintStream ps = new PrintStream(file);
+                    ps.println("Nothin here");
+                    ps.close();
+                } else
+                    throw new IOException("Failed to write to input file :(");
+            } catch (IOException e) {
+
+            }*/
             AlertDialog.Builder builder = new AlertDialog.Builder(binding.getRoot().getContext());
             builder.setTitle("Choose Visualization");
             builder.setCancelable(false);
@@ -129,15 +145,15 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this.getBaseContext(), "Select Data Type", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(dataSource.equals(dataSources[2]) && dataSource.equals("")){
-            Toast.makeText(this.getBaseContext(), "Search Requires Keyword", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         //Building the Search object for the search
         APISearch search = new APISearch();
         Editable keyword = ((TextInputEditText) findViewById(R.id.keyword_text)).getText();
-        search.setQuery(keyword.toString());
+        if(dataSource.equals(dataSources[2]) && (keyword == null || keyword.toString().isEmpty())){
+            Toast.makeText(this.getBaseContext(), "Search Requires Keyword", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        search.setQuery(keyword == null ? "" : keyword.toString());
         DataCache cache = DataCache.getCache();
         List<APIData> data = null;
         try {
