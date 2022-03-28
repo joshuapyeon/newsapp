@@ -1,26 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.graph.GraphFragment">
 
-    <Spinner
-        android:id="@+id/VisualizationOptions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@android:array/emailAddressTypes"
-        android:visibility="visible" />
 
-    <ListView
-        android:id="@+id/DashboardList"
-        android:layout_width="409dp"
-        android:layout_height="729dp"
-        android:layout_below="@+id/VisualizationOptions"
-        android:layout_marginTop="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<com.github.mikephil.charting.charts.BarChart
+    android:id="@+id/bargraph"
+    android:layout_width="match_parent"
+    android:layout_height="600dp"></com.github.mikephil.charting.charts.BarChart>
+
+
 </RelativeLayout>
+
+
+    <!--
+        <Spinner
+            android:id="@+id/VisualizationOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@android:array/emailAddressTypes"
+            android:visibility="visible" />
+
+        <ListView
+            android:id="@+id/DashboardList"
+            android:layout_width="409dp"
+            android:layout_height="729dp"
+            android:layout_below="@+id/VisualizationOptions"
+            android:layout_marginTop="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    -->

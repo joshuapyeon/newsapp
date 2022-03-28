@@ -4,34 +4,53 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
+import android.text.Editable;
 import android.view.View;
-
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.example.wntprototype.APIWrappers.APIData;
 import com.example.wntprototype.APIWrappers.APISearch;
+import com.example.wntprototype.APIWrappers.GoogleAPIs.GTSWrapper;
+import com.example.wntprototype.APIWrappers.GoogleAPIs.TrendingWrapper;
 import com.example.wntprototype.APIWrappers.WebSearchAPI.WebSearchWrapper;
 import com.example.wntprototype.databinding.ActivityMainBinding;
+import com.example.wntprototype.ui.graph.GraphFragment;
+import com.example.wntprototype.ui.list.ListFragment;
+import com.example.wntprototype.ui.wordmap.WordMapFragment;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    //The list of topics for the filter menu. TODO: replace the hardcoded topics with API-provided ones
-    private final String[] topics = {"COVID", "Sports", "World Events"};
-    //Which of the above topics are selected?
-    private final boolean[] selectedTopics = {true, true, true};
-    //A list of sources for the filter menu. TODO: replace the hardcoded sources with API-provided ones
-    private final String[] sources = {"CNN", "NBC", "FOX"};
-    //Which of the above sources are selected?
-    private final boolean[] selectedSources = {true, true, true};
-    private final String[] visualizations = {"List", "Graph", "Word Map"};
+
+    /**
+     * The different view options
+     */
+    private final String[] visualizations = { "List", "Graph", "Word Map" };
+
+    /**
+     * The list of different data sources that the application can pull from
+     */
+    private final String[] dataSources = { "News", "Google Trends", "Trending Searches" };
+
+    /**
+     * The current fragment value that we are seeing
+     */
     private int currVisualization = 0;
+
+    /**
+     * The Main Activity xml Binding
+     */
     private ActivityMainBinding binding;
 
     @Override
@@ -40,73 +59,34 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //If the search bar is clicked or typed into, set the filter view visible
-        this.findViewById(R.id.search_bar).setOnClickListener((u1) -> MainActivity.this.findViewById(R.id.filter_view).setVisibility(View.VISIBLE));
-        this.findViewById(R.id.search_bar).setOnKeyListener((u1, u2, u3) -> {
-            MainActivity.this.findViewById(R.id.filter_view).setVisibility(View.VISIBLE);
-            return true;
-        });
-        //If the user closes the search bar or presses "search", run executeSearch()
-        ((SearchView) this.findViewById(R.id.search_bar)).setOnCloseListener(() -> {
-            MainActivity.this.executeSearch(((SearchView) this.findViewById(R.id.search_bar)).getQuery().toString());
-            return true;
-        });
-        this.findViewById(R.id.button_search).setOnClickListener((u1) -> MainActivity.this.executeSearch(((SearchView) this.findViewById(R.id.search_bar)).getQuery().toString()));
-        //If the user presses the X, close the filter view
-        this.findViewById(R.id.button_close).setOnClickListener((u1) -> MainActivity.this.findViewById(R.id.filter_view).setVisibility(View.GONE));
+        //Initializes the different options for the Data from the APIs
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this.getBaseContext(), R.layout.dropdown_item, dataSources);
+        binding.dataSearchText.setAdapter(arrayAdapter);
 
-        //If the topics button is clicked, open the topic filter dropdown.
-        this.findViewById(R.id.topic_filter).setOnClickListener((u1) -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this.findViewById(R.id.filter_view).getContext());
+        //Hides the Search Drop Down
+        findViewById(R.id.filter_view).setVisibility(View.GONE);
 
-            builder.setTitle("Filter by Topic");
-            builder.setCancelable(false);
-            builder.setMultiChoiceItems(topics, selectedTopics, (v1, v2, v3) -> selectedTopics[v2] = v3);
-            builder.setPositiveButton("OK", (v1, v2) -> {
-            });
-            builder.show();
-        });
+        //Tells the search dropdown button to make the filters visible
+        findViewById(R.id.search_dropdown_button).setOnClickListener((u1) -> MainActivity.this.findViewById(R.id.filter_view).setVisibility(View.VISIBLE));
 
-        //If the sources button is clicked, open the source filter dropdown.
-        this.findViewById(R.id.source_filter).setOnClickListener((u1) -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this.findViewById(R.id.filter_view).getContext());
+        //This tells the search button to execute the search
+        findViewById(R.id.button_search).setOnClickListener((u1) -> executeSearch());
 
-            builder.setTitle("Filter by Source");
-            builder.setCancelable(false);
-            builder.setMultiChoiceItems(sources, selectedSources, (v1, v2, v3) -> selectedSources[v2] = v3);
-            builder.setPositiveButton("OK", (v1, v2) -> {
-            });
-            builder.show();
-        });
+        //This tells the close button to close the search drop down
+        findViewById(R.id.close_search).setOnClickListener((u1) -> MainActivity.this.findViewById(R.id.filter_view).setVisibility(View.GONE));
 
-        //If the visualize button is clicked, open the dropdown menu.
-        this.findViewById(R.id.visualize_button).setOnClickListener((u1) -> {
+        //Sets the onClickListener for the
+        findViewById(R.id.visualize_button).setOnClickListener((u1) -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(binding.getRoot().getContext());
-
             builder.setTitle("Choose Visualization");
             builder.setCancelable(false);
             builder.setSingleChoiceItems(visualizations, currVisualization, (v1, v2) -> currVisualization = v2);
-            //When the user presses OK, switch the visualization fragment.
-            builder.setPositiveButton("OK", (v1, v2) -> {
-                int dest;
-                switch (currVisualization) {
-                    case 0:
-                        dest = R.id.navigation_home;
-                        break;
-                    case 1:
-                        dest = R.id.navigation_dashboard;
-                        break;
-                    default:
-                        dest = R.id.navigation_notifications;
-                        break;
-                }
-                ((NavHostFragment) ((FragmentContainerView) this.findViewById(R.id.nav_host_fragment_activity_main)).getFragment()).getNavController().navigate(dest);
-            });
+            builder.setPositiveButton("OK", (v1, v2) -> replaceFragment(getCurrVisualization()));
             builder.show();
         });
 
-        //If the share button is clicked, show the share menu.
-        this.findViewById(R.id.share_button).setOnClickListener((u1) -> {
+        //Sets the onClickListener for the Share button
+        findViewById(R.id.share_button).setOnClickListener((u1) -> {
             Intent sharingIntent = new Intent(Intent.ACTION_SEND);
 
             // This will be the type of content; maybe PNG/JPEG image?
@@ -122,42 +102,91 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void executeSearch(String keyword) {
-        //Hide the filter view
-        this.findViewById(R.id.filter_view).setVisibility(View.GONE);
-        //Clear the search bar
-        ((SearchView) this.findViewById(R.id.search_bar)).setQuery("", false);
+    /**
+     * This replaces the current fragment displayed on the main activity
+     * @param fragment the fragment to be replaced to
+     */
+    private void replaceFragment(Fragment fragment) {
+        try {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.frame_layout, fragment);
+            fragmentTransaction.commit();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * The Body of code that runs when the user presses the search button
+     */
+    private void executeSearch() {
+        //The text in the keyword spot
+        String dataSource = ((TextInputLayout)findViewById(R.id.data_search_layout)).getEditText().getText().toString();
+
+        //These are just data pull dependencies, Eventually I would like to deal with this differently
+        if(dataSource.equals("")){
+            Toast.makeText(this.getBaseContext(), "Select Data Type", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(dataSource.equals(dataSources[2]) && dataSource.equals("")){
+            Toast.makeText(this.getBaseContext(), "Search Requires Keyword", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //Building the Search object for the search
         APISearch search = new APISearch();
-        search.setQuery(keyword);
+        Editable keyword = ((TextInputEditText) findViewById(R.id.keyword_text)).getText();
+        search.setQuery(keyword.toString());
         DataCache cache = DataCache.getCache();
         List<APIData> data = null;
         try {
-            //All of the API Data pulls use an AsyncTask because it throws an error if there is a
-            //network call on the main thread, so this gets the list of APIData
+//            All of the API Data pulls use an AsyncTask because it throws an error if there is a
+//            network call on the main thread, so this gets the list of APIData
             Toast.makeText(this.getBaseContext(), "Searching...", Toast.LENGTH_SHORT).show();
-//            if(){
-//                data = new TrendingWrapper().execute(search).get();
-//            }else if(){
-//                data = new GTSWrapper().execute(search).get();
-//            }else if(){
-//                data = new WebSearchWrapper().execute(search).get();
-//            }else{
-            data = new WebSearchWrapper().execute(search).get();
-//            }
-        } catch (Exception e) {
+            if(dataSource.equals(dataSources[1])){
+                data = new TrendingWrapper().execute(search).get();
+            }else if(dataSource.equals(dataSources[2])){
+                data = new GTSWrapper().execute(search).get();
+            }else if(dataSource.equals(dataSources[0])){
+                data = new WebSearchWrapper().execute(search).get();
+            }else{
+                data = new WebSearchWrapper().execute(search).get();
+            }
+        }catch(Exception e){
             e.printStackTrace();
         }
-        if (data == null) {
-            Toast.makeText(this.getBaseContext(), "Search failed", Toast.LENGTH_LONG).show();
-        } else {
-            cache.setData(data);
-            Toast.makeText(this.getBaseContext(), "Search Succeeded", Toast.LENGTH_LONG).show();
-        }
 
-        //Reset the filters after the search has run
-        for (int i = 0; i < this.selectedTopics.length; i++)
-            selectedTopics[i] = true;
-        for (int i = 0; i < this.selectedSources.length; i++)
-            selectedSources[i] = true;
+        //Lets the user know if the search was successful
+        if(data == null){
+            Toast.makeText(this.getBaseContext(), "Search failed", Toast.LENGTH_LONG).show();
+        }else{
+            cache.setData(data);
+            Toast.makeText(this.getBaseContext(), "Search Succeeded", Toast.LENGTH_SHORT).show();
+        }
+        //Hides the Search View and updates the current fragment
+        this.findViewById(R.id.filter_view).setVisibility(View.GONE);
+        replaceFragment(getCurrVisualization());
     }
+
+    /**
+     * Gets the current Fragment
+     * @return The Fragment of the current visualization
+     */
+    private Fragment getCurrVisualization(){
+        Fragment dest;
+        switch (currVisualization) {
+            case 0:
+                dest = new ListFragment();
+                break;
+            case 1:
+                dest = new GraphFragment();
+                break;
+            default:
+                dest = new WordMapFragment();
+                break;
+        }
+        return dest;
+    }
+
 }
