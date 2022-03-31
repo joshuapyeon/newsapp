@@ -24,7 +24,10 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
+
+import wordcloud.WordCloudGenerator;
 
 
 public class WordMapFragment extends Fragment {
@@ -52,14 +55,11 @@ public class WordMapFragment extends Fragment {
                 } else
                     throw new IOException("Failed to write to input file :(");
 
-                String drawablesPath = this.getContext().getDir("drawable", Context.MODE_PRIVATE).getPath();
                 Toast.makeText(view.getContext(), "Generating Word map...", Toast.LENGTH_LONG).show();
-                String[] cmd = { "res/word_cloud_res/wordcloudgenerator.jar", "-maskpath", drawablesPath + "/mask_circle.png", "-inputpath", this.getContext().getFilesDir().getPath() + "/input.txt", "-outputpath", this.getContext().getFilesDir().getPath() + "/output.png" };
-                Process p = Runtime.getRuntime().exec(cmd);
-                p.waitFor();
+                WordCloudGenerator.main(new String[]{"-inputpath", this.getContext().getFilesDir().getPath() + "/input.txt", "-outputpath", this.getContext().getFilesDir().getPath() + "/output.png"});
 
                 ((ImageView) WordMapFragment.this.requireView().findViewById(R.id.word_map_img)).setImageURI(new Uri.Builder().path(this.getContext().getFilesDir().getPath() + "/output.png").build());
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         });

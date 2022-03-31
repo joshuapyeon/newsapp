@@ -81,18 +81,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Sets the onClickListener for the
         findViewById(R.id.visualize_button).setOnClickListener((u1) -> {
-            /*File file = new File(this.getFilesDir().getPath() + "/input.txt");
-            try {
-                file.createNewFile();
-                if (file.setWritable(true)) {
-                    PrintStream ps = new PrintStream(file);
-                    ps.println("Nothin here");
-                    ps.close();
-                } else
-                    throw new IOException("Failed to write to input file :(");
-            } catch (IOException e) {
-
-            }*/
             AlertDialog.Builder builder = new AlertDialog.Builder(binding.getRoot().getContext());
             builder.setTitle("Choose Visualization");
             builder.setCancelable(false);
