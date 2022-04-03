@@ -1,6 +1,6 @@
 package com.example.wntprototype.ui.wordmap;
 
-import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.wntprototype.APIWrappers.APIData;
@@ -22,12 +21,7 @@ import com.example.wntprototype.databinding.FragmentWordMapBinding;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
-
-import wordcloud.WordCloudGenerator;
 
 
 public class WordMapFragment extends Fragment {
@@ -45,8 +39,9 @@ public class WordMapFragment extends Fragment {
             }
 
             try {
-                File file = new File(this.getContext().getFilesDir().getPath() + "/input.txt");
-                file.createNewFile();
+                File file = new File(this.requireContext().getFilesDir().getPath() + "/input.txt");
+                if (!file.createNewFile())
+                    System.out.println("File exists, skipping creation");
                 if (file.setWritable(true)) {
                     PrintStream ps = new PrintStream(file);
                     for (APIData a : data)
@@ -56,9 +51,9 @@ public class WordMapFragment extends Fragment {
                     throw new IOException("Failed to write to input file :(");
 
                 Toast.makeText(view.getContext(), "Generating Word map...", Toast.LENGTH_LONG).show();
-                WordCloudGenerator.main(new String[]{"-inputpath", this.getContext().getFilesDir().getPath() + "/input.txt", "-outputpath", this.getContext().getFilesDir().getPath() + "/output.png"});
-
-                ((ImageView) WordMapFragment.this.requireView().findViewById(R.id.word_map_img)).setImageURI(new Uri.Builder().path(this.getContext().getFilesDir().getPath() + "/output.png").build());
+                //WordCloudGenerator.main(new String[]{"-inputpath", this.requireContext().getFilesDir().getPath() + "/input.txt", "-outputpath", this.requireContext().getFilesDir().getPath() + "/output.png"});
+                Bitmap b = WordCloudGenerator.generateWordCloud(new String[]{"-inputpath", this.requireContext().getFilesDir().getPath() + "/input.txt", "-maxfsize", "40", "-minfsize", "20", "-fstep", "5"});
+                ((ImageView) WordMapFragment.this.requireView().findViewById(R.id.word_map_img)).setImageBitmap(b);
             } catch (IOException e) {
                 e.printStackTrace();
             }
