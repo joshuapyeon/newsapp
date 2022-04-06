@@ -58,6 +58,7 @@ public class GraphFragment extends Fragment {
             barDataSetY.setColors(ColorTemplate.PASTEL_COLORS);
             barDataSetY.setValueTextColor(Color.BLACK);
             barDataSetY.setValueTextSize(16f);
+
         }
         return root;
     }
@@ -77,11 +78,11 @@ public class GraphFragment extends Fragment {
         data = cache.getData();
         for (APIData myData : data) {
             headlinesList.add(myData.getToParse());
-            //set.add(new BarDataSet(barEntries, myData.getToParse()));
-            int storeIndex = myData.getToParse().indexOf(" ");
-            BarDataSet forHeadlines = new BarDataSet(barEntries, myData.getToParse().substring(0, storeIndex));
-            forHeadlines.setColors(ColorTemplate.JOYFUL_COLORS);
-            set.add(forHeadlines);
+            set.add(new BarDataSet(barEntries, myData.getToParse()));
+            //int storeIndex = myData.getToParse().indexOf(" ");
+            //BarDataSet forHeadlines = new BarDataSet(barEntries, myData.getToParse().substring(0, storeIndex));
+            //headLinesList.setColors(ColorTemplate.JOYFUL_COLORS);
+            //set.add(forHeadlines);
         }
     }
 
