@@ -382,12 +382,13 @@ public class WordCloudGenerator {
                 else
                     rgb = pickRandomColor();
 
+                graphics.save();
                 graphics.translate(textposx, textposy);
 
                 if (vertical)
                     graphics.rotate(-90);
 
-                paint.setColor(0xFF000000 | (((int)rgb.r) << 16) | (((int)rgb.g) << 8) | ((int)rgb.b));
+                paint.setColor(0xFF000000 | (((int)(rgb.r * 255)) << 16) | (((int)(rgb.g * 255)) << 8) | ((int)(rgb.b * 255)));
 
                 graphics.drawText(text, 0, 0, paint);
 
@@ -397,9 +398,7 @@ public class WordCloudGenerator {
                 // freeze updates the "RLSA like" matrix and erases the content
                 freezeImage(bbposx, (int) bbposy, (int) bbWidth, (int) bbHeight, words_margin);
 
-                if (vertical)
-                    graphics.rotate(90);
-                graphics.translate(-textposx, -textposy);
+                graphics.restore();
                 return true;
             } else {
                 fontSize -= font_step;

@@ -30,7 +30,7 @@ public class WordMapFragment extends Fragment {
         FragmentWordMapBinding binding = FragmentWordMapBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        Button confirmButton = root.findViewById(R.id.button);
+        Button confirmButton = root.findViewById(R.id.generate_button);
 
         confirmButton.setOnClickListener((view) -> {
             List<TrendingContent> data = DataCache.getCache().getData();
@@ -52,9 +52,9 @@ public class WordMapFragment extends Fragment {
                     throw new IOException("Failed to write to input file :(");
 
                 Toast.makeText(view.getContext(), "Generating Word map...", Toast.LENGTH_LONG).show();
-                //WordCloudGenerator.main(new String[]{"-inputpath", this.requireContext().getFilesDir().getPath() + "/input.txt", "-outputpath", this.requireContext().getFilesDir().getPath() + "/output.png"});
-                Bitmap b = WordCloudGenerator.generateWordCloud(new String[]{"-inputpath", this.requireContext().getFilesDir().getPath() + "/input.txt", "-maxfsize", "40", "-minfsize", "20", "-fstep", "5"});
+                Bitmap b = WordCloudGenerator.generateWordCloud(new String[]{"-inputpath", this.requireContext().getFilesDir().getPath() + "/input.txt", "-maxfsize", "100", "-minfsize", "40", "-fstep", "2"});
                 ((ImageView) WordMapFragment.this.requireView().findViewById(R.id.word_map_img)).setImageBitmap(b);
+                confirmButton.setVisibility(View.GONE);
             } catch (IOException e) {
                 e.printStackTrace();
             }

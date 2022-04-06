@@ -4,10 +4,12 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -15,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.wntprototype.APIWrappers.APISearch;
@@ -36,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The different view options
      */
-    private final String[] visualizations = { "List", "Graph", "Word Map" };
+    private final String[] visualizations = {"List", "Graph", "Word Map"};
 
     /**
      * The list of different data sources that the application can pull from
@@ -82,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         //Initializes the different options for the Data from the APIs
         String[] dataSources = new String[sources.size()];
         int i = 0;
-        for (DataSource temp: sources) {
+        for (DataSource temp : sources) {
             dataSources[i] = temp.toString();
             stringToEnum.put(temp.toString(), temp);
             i++;
@@ -115,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Sets up the different listeners for the keyword and the data source
-        ((AutoCompleteTextView)findViewById(R.id.data_search_text)).addTextChangedListener(new onTextEdit(false));
-        ((TextInputEditText)findViewById(R.id.keyword_text)).addTextChangedListener(new onTextEdit(true));
+        ((AutoCompleteTextView) findViewById(R.id.data_search_text)).addTextChangedListener(new onTextEdit(false));
+        ((TextInputEditText) findViewById(R.id.keyword_text)).addTextChangedListener(new onTextEdit(true));
 
         //Sets the onClickListener for the Share button
         findViewById(R.id.share_button).setOnClickListener((u1) -> {
@@ -137,18 +140,20 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Toggles the visibility of the search tab
+     *
      * @return the value of the Gone or Visible tag
      */
     private int toggleVisibility() {
-        if(findViewById(R.id.filter_view).getVisibility() == View.GONE){
+        if (findViewById(R.id.filter_view).getVisibility() == View.GONE) {
             return View.VISIBLE;
-        }else{
+        } else {
             return View.GONE;
         }
     }
 
     /**
      * This replaces the current fragment displayed on the main activity
+     *
      * @param fragment the fragment to be replaced to
      */
     private void replaceFragment(Fragment fragment) {
@@ -157,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.frame_layout, fragment);
             fragmentTransaction.commit();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -175,23 +180,31 @@ public class MainActivity extends AppCompatActivity {
         new DataManager().buildData(search);
 
         //Lets the user know if the search was successful
-        if(!cache.hasData()){
+        if (!cache.hasData()) {
             Toast.makeText(this.getBaseContext(), "Search failed", Toast.LENGTH_LONG).show();
-        }else{
+        } else {
             ((TextInputEditText) findViewById(R.id.keyword_text)).setText("");
             Toast.makeText(this.getBaseContext(), "Search Succeeded", Toast.LENGTH_SHORT).show();
         }
 
         //Hides the Search View and updates the current fragment
         this.findViewById(R.id.filter_view).setVisibility(View.GONE);
+
+        //If we're in the word map view, we need to clear the old one and put the button back where it belongs.
+        if (this.findViewById(R.id.generate_button) != null)
+            this.findViewById(R.id.generate_button).setVisibility(View.VISIBLE);
+        if (this.findViewById(R.id.word_map_img) != null)
+            ((ImageView)this.findViewById(R.id.word_map_img)).setImageBitmap(null);
+
         replaceFragment(getCurrVisualization());
     }
 
     /**
      * Gets the current Fragment
+     *
      * @return The Fragment of the current visualization
      */
-    private Fragment getCurrVisualization(){
+    private Fragment getCurrVisualization() {
         Fragment dest;
         switch (currVisualization) {
             case 0:
@@ -213,31 +226,34 @@ public class MainActivity extends AppCompatActivity {
     private class onTextEdit implements TextWatcher {
 
         private boolean isKeyword;
-        public onTextEdit(boolean isKeyword){
+
+        public onTextEdit(boolean isKeyword) {
             this.isKeyword = isKeyword;
         }
+
         @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            if(isKeyword){
+            if (isKeyword) {
                 currentKeyword = charSequence.toString();
-            }else{
+            } else {
                 currentDataSource = stringToEnum.get(charSequence.toString());
             }
         }
 
         @Override
         public void afterTextChanged(Editable editable) {
-            if(currentDataSource.hasKeyword()){
+            if (currentDataSource.hasKeyword()) {
                 ((TextInputLayout) findViewById(R.id.search_bar)).setEnabled(true);
-                if(currentDataSource.requiresKeyword() && currentKeyword.equals("")){
+                if (currentDataSource.requiresKeyword() && currentKeyword.equals("")) {
                     ((Button) findViewById(R.id.button_search)).setEnabled(false);
-                }else{
+                } else {
                     ((Button) findViewById(R.id.button_search)).setEnabled(true);
                 }
-            }else{
+            } else {
                 ((TextInputLayout) findViewById(R.id.search_bar)).setEnabled(false);
                 ((Button) findViewById(R.id.button_search)).setEnabled(true);
             }
