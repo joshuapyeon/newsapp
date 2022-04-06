@@ -2,8 +2,9 @@ package com.example.wntprototype.APIWrappers.GoogleAPIs;
 
 import android.os.AsyncTask;
 
-import com.example.wntprototype.APIWrappers.APIData;
 import com.example.wntprototype.APIWrappers.APISearch;
+import com.example.wntprototype.APIWrappers.TrendingContent;
+import com.example.wntprototype.APIWrappers.NewsData;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,12 +16,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class TrendingWrapper extends AsyncTask<APISearch, Void, List<APIData>> {
+public class TrendingWrapper extends AsyncTask<APISearch, Void, List<TrendingContent>> {
 
     private final String api_key = "0befbe4810mshf7b6de507ca3575p1eadedjsn2080a980ab3d";
 
     @Override
-    protected List<APIData> doInBackground(APISearch... apiSearches) {
+    protected List<TrendingContent> doInBackground(APISearch... apiSearches) {
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
@@ -29,18 +30,38 @@ public class TrendingWrapper extends AsyncTask<APISearch, Void, List<APIData>> {
                 .addHeader("X-RapidAPI-Host", "google-trend-api.p.rapidapi.com")
                 .addHeader("X-RapidAPI-Key", api_key)
                 .build();
-        ArrayList<APIData> toReturn = new ArrayList<APIData>();
+        ArrayList<TrendingContent> toReturn = new ArrayList<TrendingContent>();
         try {
             Response response = client.newCall(request).execute();
             JSONObject data = new JSONObject(response.body().string());
             JSONArray values = data.optJSONObject("storySummaries").optJSONArray("trendingStories");
             for (int i = 0; i < values.length(); i++) {
                 JSONArray trends = values.optJSONObject(i).optJSONArray("entityNames");
+                JSONArray articles = values.optJSONObject(i).optJSONArray("articles");
+                String imageUrl = values.optJSONObject(i).optJSONObject("image").optString("imgUrl");
+                List<NewsData> newsArticles = new ArrayList<>();
+                for(int j = 0; j < articles.length(); j++){
+                    JSONObject article = articles.optJSONObject(j);
+                    NewsData temp = new NewsData();
+                    temp.title = article.optString("articleTitle");
+                    temp.source = article.optString("source");
+                    temp.url = article.optString("url");
+                    temp.snippet = article.optString("snippet");
+                    temp.urlToImage = imageUrl;
+                    newsArticles.add(temp);
+                }
                 for (int j = 0; j < trends.length(); j++) {
-                    TrendingData temp = new TrendingData();
-                    temp.title = trends.optString(j);
-                    temp.setToParse();
+                    TrendingContent temp = new TrendingContent();
+                    temp.setArticles(newsArticles);
+                    temp.setPhrase(trends.optString(j));
                     toReturn.add(temp);
+                }
+            }
+            for(TrendingContent temp: toReturn){
+                for(NewsData article: temp.getArticles()){
+                    if(article.title.contains(temp.getPhrase())){
+                        temp.setValue(temp.getValue() + 1);
+                    }
                 }
             }
             return toReturn;
