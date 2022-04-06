@@ -11,8 +11,39 @@ public class APISearch {
     /**
      * The query for the data pull to search
      */
-    private boolean containsQuery;
+    private boolean containsQuery = false;
+
+    /**
+     * the Query
+     */
     private String query;
+
+    /**
+     * The Data source
+     */
+    private DataSource source;
+
+    /**
+     * returns the source
+     * @return the source
+     */
+    public DataSource getSource() {
+        return source;
+    }
+
+    /**
+     * Sets the Searches source
+     * @param source the source of the data pull
+     */
+    public void setSource(DataSource source) {
+        this.source = source;
+        this.hasSource = true;
+    }
+
+    /**
+     * Says if the search has a data source
+     */
+    private boolean hasSource = false;
 
     /**
      *  This returns the query.
@@ -27,8 +58,10 @@ public class APISearch {
      * @param s The String to set the query.
      */
     public void setQuery(String s){
-        containsQuery = true;
-        query = s;
+        if(!s.equals("")) {
+            containsQuery = true;
+            query = s;
+        }
     }
 
     /**
@@ -47,26 +80,4 @@ public class APISearch {
         return containsQuery;
     }
 
-    /**
-     * Something we can re-add later if needed, I just Defaulted it to United States because I
-     * Don't think the user will need to change the country any time soon.
-     */
-//    public boolean hasCountry;
-//    public Country country;
-
-    /**
-     * The rest of these are non functional, they were supposed to be for NewsAPI but I am generalizing
-     * so it can work for any API call.
-     */
-//    public boolean hasLanguage;
-//    public String language;
-
-//    public boolean hasSource;
-//    public String source;
-
-//    public boolean hasCategory;
-//    public Category category;
-
-//    public boolean hasDomain;
-//    public String domain;
 }

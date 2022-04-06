@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.example.wntprototype.APIWrappers.APIData;
 import com.example.wntprototype.APIWrappers.APISearch;
 import com.example.wntprototype.APIWrappers.GoogleAPIs.TrendingWrapper;
+import com.example.wntprototype.APIWrappers.TrendingContent;
 import com.example.wntprototype.APIWrappers.WebSearchAPI.WebSearchWrapper;
 import com.example.wntprototype.DataCache;
 import com.example.wntprototype.R;
@@ -28,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 
 public class ListFragment extends Fragment {
     DataCache cache = DataCache.getCache();
-    List<APIData> searchList;
+    List<TrendingContent> searchList;
     List<String> apiToStringList = new ArrayList<String>();
     private FragmentListBinding binding;
     ListView listFormat;
@@ -47,8 +48,8 @@ public class ListFragment extends Fragment {
 
             //TODO: Parse the APIData as a string.
             int numID = 1;
-            for (APIData api : searchList) {
-                apiToStringList.add("#" + numID++ + ": " + api.getToParse());
+            for (TrendingContent api : searchList) {
+                apiToStringList.add("#" + numID++ + ": " + api.getPhrase());
             }
             arrayAdapter = new ArrayAdapter(root.getContext(), android.R.layout.simple_list_item_1, apiToStringList);
             listFormat.setAdapter(arrayAdapter);

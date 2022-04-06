@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import com.example.wntprototype.APIWrappers.APIData;
 import com.example.wntprototype.APIWrappers.APISearch;
+import com.example.wntprototype.APIWrappers.TrendingContent;
 
 
 import org.json.JSONArray;
@@ -23,7 +24,7 @@ import okhttp3.Response;
  *
  * This class gets the latest trending searches on Google related to the query.
  */
-public class GTSWrapper extends AsyncTask<APISearch, Void, List<APIData>> {
+public class GTSWrapper extends AsyncTask<APISearch, Void, List<TrendingContent>> {
 
     /**
      * The API key.
@@ -34,7 +35,7 @@ public class GTSWrapper extends AsyncTask<APISearch, Void, List<APIData>> {
     /**
      * Builds and sends the data in a separate thread.
      */
-    protected List<APIData> doInBackground(APISearch... apiSearches) {
+    protected List<TrendingContent> doInBackground(APISearch... apiSearches) {
         return buildDataList(getResponseText(apiSearches[0]));
     }
 
@@ -45,19 +46,21 @@ public class GTSWrapper extends AsyncTask<APISearch, Void, List<APIData>> {
      * @param text The API content to parse.
      * @return A list of the Google Trending Searches API data.
      */
-    private List<APIData> buildDataList(String text) {
-        List<APIData> toReturn = new ArrayList<APIData>();
+    private List<TrendingContent> buildDataList(String text) {
+        List<TrendingContent> toReturn = new ArrayList<TrendingContent>();
         try {
             JSONObject data = new JSONObject(text);
             JSONArray results = data.optJSONArray("results");
             for(int i = 0; i < results.length(); i++){
-                GTSData temp = new GTSData();
-                temp.content = results.optString(i);
-                temp.setToParse();
+                TrendingContent temp = new TrendingContent();
+                temp.setPhrase(results.optString(i));
                 toReturn.add(temp);
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        for(int i = 0; i < toReturn.size(); i++){
+            toReturn.get(i).setValue(toReturn.size()-i);
         }
         return toReturn;
     }

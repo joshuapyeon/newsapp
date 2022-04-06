@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.wntprototype.APIWrappers.APIData;
+import com.example.wntprototype.APIWrappers.TrendingContent;
 import com.example.wntprototype.DataCache;
 import com.example.wntprototype.R;
 import com.example.wntprototype.databinding.FragmentWordMapBinding;
@@ -32,7 +33,7 @@ public class WordMapFragment extends Fragment {
         Button confirmButton = root.findViewById(R.id.button);
 
         confirmButton.setOnClickListener((view) -> {
-            List<APIData> data = DataCache.getCache().getData();
+            List<TrendingContent> data = DataCache.getCache().getData();
             if (data == null || data.isEmpty()) {
                 Toast.makeText(view.getContext(), "No data--try searching for something first!", Toast.LENGTH_LONG).show();
                 return;
@@ -44,8 +45,8 @@ public class WordMapFragment extends Fragment {
                     System.out.println("File exists, skipping creation");
                 if (file.setWritable(true)) {
                     PrintStream ps = new PrintStream(file);
-                    for (APIData a : data)
-                        ps.println(a.getToParse());
+                    for (TrendingContent a : data)
+                        ps.println(a.getPhrase());
                     ps.close();
                 } else
                     throw new IOException("Failed to write to input file :(");

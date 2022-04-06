@@ -41,6 +41,7 @@
                 android:id="@+id/keyword_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:text=""
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -74,6 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_search"
+            android:enabled="false"
             app:layout_constraintRight_toLeftOf="@id/close_search"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_bar"
@@ -87,7 +89,6 @@
             app:layout_constraintLeft_toRightOf="@id/button_search"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_bar"
-
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -115,13 +116,14 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:ignore="UnusedAttribute" />
 
-    <ImageButton
+    <Button
         android:id="@+id/search_dropdown_button"
         android:layout_width="293dp"
         android:layout_height="59dp"
+        android:text="Search Options"
+        android:drawableLeft="@drawable/ic_dropdown_arrow"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/visualize_button"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_search" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

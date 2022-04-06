@@ -14,7 +14,7 @@ public abstract class APIData {
      * This method will be determined by the child class, where the APIData decides
      * what it wants to parse
      */
-    public abstract void setToParse();
+    protected abstract void setToParse();
 
     /**
      * Gives access to the string toParse

@@ -6,23 +6,20 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.wntprototype.APIWrappers.APIData;
 import com.example.wntprototype.APIWrappers.APISearch;
-import com.example.wntprototype.APIWrappers.GoogleAPIs.GTSWrapper;
-import com.example.wntprototype.APIWrappers.GoogleAPIs.TrendingWrapper;
-import com.example.wntprototype.APIWrappers.WebSearchAPI.WebSearchWrapper;
+import com.example.wntprototype.APIWrappers.DataManager;
+import com.example.wntprototype.APIWrappers.DataSource;
 import com.example.wntprototype.databinding.ActivityMainBinding;
 import com.example.wntprototype.ui.graph.GraphFragment;
 import com.example.wntprototype.ui.list.ListFragment;
@@ -30,10 +27,9 @@ import com.example.wntprototype.ui.wordmap.WordMapFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.List;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,12 +41,32 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The list of different data sources that the application can pull from
      */
-    private final String[] dataSources = { "News", "Google Trends", "Trending Searches" };
+    private final EnumSet<DataSource> sources = EnumSet.allOf(DataSource.class);
+
+    /**
+     * Lets the Strings convert back into Enums
+     */
+    private Map<String, DataSource> stringToEnum = new HashMap<>();
+
+    /**
+     * Gives easy access to the currently selected data source
+     */
+    private DataSource currentDataSource = null;
+
+    /**
+     * Gives easy access to the current Keyword
+     */
+    private String currentKeyword = "";
 
     /**
      * The current fragment value that we are seeing
      */
     private int currVisualization = 0;
+
+    /**
+     * the global cache
+     */
+    private DataCache cache = DataCache.getCache();
 
     /**
      * The Main Activity xml Binding
@@ -64,6 +80,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         //Initializes the different options for the Data from the APIs
+        String[] dataSources = new String[sources.size()];
+        int i = 0;
+        for (DataSource temp: sources) {
+            dataSources[i] = temp.toString();
+            stringToEnum.put(temp.toString(), temp);
+            i++;
+        }
         ArrayAdapter arrayAdapter = new ArrayAdapter(this.getBaseContext(), R.layout.dropdown_item, dataSources);
         binding.dataSearchText.setAdapter(arrayAdapter);
 
@@ -71,13 +94,15 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.filter_view).setVisibility(View.GONE);
 
         //Tells the search dropdown button to make the filters visible
-        findViewById(R.id.search_dropdown_button).setOnClickListener((u1) -> MainActivity.this.findViewById(R.id.filter_view).setVisibility(View.VISIBLE));
+        findViewById(R.id.search_dropdown_button).setOnClickListener((u1) ->
+                findViewById(R.id.filter_view).setVisibility(toggleVisibility()));
 
         //This tells the search button to execute the search
         findViewById(R.id.button_search).setOnClickListener((u1) -> executeSearch());
 
         //This tells the close button to close the search drop down
-        findViewById(R.id.close_search).setOnClickListener((u1) -> MainActivity.this.findViewById(R.id.filter_view).setVisibility(View.GONE));
+        findViewById(R.id.close_search).setOnClickListener((u1) ->
+                findViewById(R.id.filter_view).setVisibility(View.GONE));
 
         //Sets the onClickListener for the
         findViewById(R.id.visualize_button).setOnClickListener((u1) -> {
@@ -88,6 +113,10 @@ public class MainActivity extends AppCompatActivity {
             builder.setPositiveButton("OK", (v1, v2) -> replaceFragment(getCurrVisualization()));
             builder.show();
         });
+
+        //Sets up the different listeners for the keyword and the data source
+        ((AutoCompleteTextView)findViewById(R.id.data_search_text)).addTextChangedListener(new onTextEdit(false));
+        ((TextInputEditText)findViewById(R.id.keyword_text)).addTextChangedListener(new onTextEdit(true));
 
         //Sets the onClickListener for the Share button
         findViewById(R.id.share_button).setOnClickListener((u1) -> {
@@ -104,6 +133,18 @@ public class MainActivity extends AppCompatActivity {
             sharingIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
             startActivity(Intent.createChooser(sharingIntent, "Share using"));
         });
+    }
+
+    /**
+     * Toggles the visibility of the search tab
+     * @return the value of the Gone or Visible tag
+     */
+    private int toggleVisibility() {
+        if(findViewById(R.id.filter_view).getVisibility() == View.GONE){
+            return View.VISIBLE;
+        }else{
+            return View.GONE;
+        }
     }
 
     /**
@@ -125,49 +166,22 @@ public class MainActivity extends AppCompatActivity {
      * The Body of code that runs when the user presses the search button
      */
     private void executeSearch() {
-        //The text in the keyword spot
-        String dataSource = ((TextInputLayout)findViewById(R.id.data_search_layout)).getEditText().getText().toString();
-
-        //These are just data pull dependencies, Eventually I would like to deal with this differently
-        if(dataSource.equals("")){
-            Toast.makeText(this.getBaseContext(), "Select Data Type", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         //Building the Search object for the search
         APISearch search = new APISearch();
-        Editable keyword = ((TextInputEditText) findViewById(R.id.keyword_text)).getText();
-        if(dataSource.equals(dataSources[2]) && (keyword == null || keyword.toString().isEmpty())){
-            Toast.makeText(this.getBaseContext(), "Search Requires Keyword", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        search.setQuery(keyword == null ? "" : keyword.toString());
-        DataCache cache = DataCache.getCache();
-        List<APIData> data = null;
-        try {
-//            All of the API Data pulls use an AsyncTask because it throws an error if there is a
-//            network call on the main thread, so this gets the list of APIData
-            Toast.makeText(this.getBaseContext(), "Searching...", Toast.LENGTH_SHORT).show();
-            if(dataSource.equals(dataSources[1])){
-                data = new TrendingWrapper().execute(search).get();
-            }else if(dataSource.equals(dataSources[2])){
-                data = new GTSWrapper().execute(search).get();
-            }else if(dataSource.equals(dataSources[0])){
-                data = new WebSearchWrapper().execute(search).get();
-            }else{
-                data = new WebSearchWrapper().execute(search).get();
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        search.setSource(currentDataSource);
+        search.setQuery(currentKeyword);
+
+        //Populates the Cache
+        new DataManager().buildData(search);
 
         //Lets the user know if the search was successful
-        if(data == null){
+        if(!cache.hasData()){
             Toast.makeText(this.getBaseContext(), "Search failed", Toast.LENGTH_LONG).show();
         }else{
-            cache.setData(data);
+            ((TextInputEditText) findViewById(R.id.keyword_text)).setText("");
             Toast.makeText(this.getBaseContext(), "Search Succeeded", Toast.LENGTH_SHORT).show();
         }
+
         //Hides the Search View and updates the current fragment
         this.findViewById(R.id.filter_view).setVisibility(View.GONE);
         replaceFragment(getCurrVisualization());
@@ -191,6 +205,43 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return dest;
+    }
+
+    /**
+     * This class is responsible for the real time accessibility of different buttons
+     */
+    private class onTextEdit implements TextWatcher {
+
+        private boolean isKeyword;
+        public onTextEdit(boolean isKeyword){
+            this.isKeyword = isKeyword;
+        }
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            if(isKeyword){
+                currentKeyword = charSequence.toString();
+            }else{
+                currentDataSource = stringToEnum.get(charSequence.toString());
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            if(currentDataSource.hasKeyword()){
+                ((TextInputLayout) findViewById(R.id.search_bar)).setEnabled(true);
+                if(currentDataSource.requiresKeyword() && currentKeyword.equals("")){
+                    ((Button) findViewById(R.id.button_search)).setEnabled(false);
+                }else{
+                    ((Button) findViewById(R.id.button_search)).setEnabled(true);
+                }
+            }else{
+                ((TextInputLayout) findViewById(R.id.search_bar)).setEnabled(false);
+                ((Button) findViewById(R.id.button_search)).setEnabled(true);
+            }
+        }
     }
 
 }

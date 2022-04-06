@@ -1,6 +1,7 @@
 package com.example.wntprototype;
 
 import com.example.wntprototype.APIWrappers.APIData;
+import com.example.wntprototype.APIWrappers.TrendingContent;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class DataCache {
     /**
      * The data for all the classes to access
      */
-    private List<APIData> data = null;
+    private List<TrendingContent> data = null;
 
     /**
      * This variable checks of there is data (to help with null exception errors)
@@ -50,7 +51,7 @@ public class DataCache {
      *
      * @return The Data from the sources
      */
-    public List<APIData> getData() {
+    public List<TrendingContent> getData() {
         return data;
     }
 
@@ -59,10 +60,12 @@ public class DataCache {
      *
      * @param data The data from the API data pull.
      */
-    public void setData(List<APIData> data) {
+    public void setData(List<TrendingContent> data) {
         if (data != null) {
             this.data = data;
             dataNull = true;
+        }else{
+            clearData();
         }
     }
 
