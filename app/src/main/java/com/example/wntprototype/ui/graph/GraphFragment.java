@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.wntprototype.APIWrappers.APIData;
+import com.example.wntprototype.APIWrappers.TrendingContent;
 import com.example.wntprototype.DataCache;
 import com.example.wntprototype.R;
 import com.example.wntprototype.databinding.FragmentGraphBinding;
@@ -32,7 +33,7 @@ public class GraphFragment extends Fragment {
     ArrayList headlinesList = new ArrayList();
     private FragmentGraphBinding binding;
     ArrayList barEntries = new ArrayList();
-    List<APIData> data;
+    List<TrendingContent> data;
     ArrayList<BarDataSet> set = new ArrayList<>();
 
     @Override
@@ -58,7 +59,6 @@ public class GraphFragment extends Fragment {
             barDataSetY.setColors(ColorTemplate.PASTEL_COLORS);
             barDataSetY.setValueTextColor(Color.BLACK);
             barDataSetY.setValueTextSize(16f);
-
         }
         return root;
     }
@@ -76,13 +76,13 @@ public class GraphFragment extends Fragment {
     private void setData() {
         Toast.makeText(getContext(), "Display graph", Toast.LENGTH_LONG).show();
         data = cache.getData();
-        for (APIData myData : data) {
-            headlinesList.add(myData.getToParse());
-            set.add(new BarDataSet(barEntries, myData.getToParse()));
-            //int storeIndex = myData.getToParse().indexOf(" ");
-            //BarDataSet forHeadlines = new BarDataSet(barEntries, myData.getToParse().substring(0, storeIndex));
-            //headLinesList.setColors(ColorTemplate.JOYFUL_COLORS);
-            //set.add(forHeadlines);
+        for (TrendingContent myData : data) {
+            headlinesList.add(myData.getPhrase());
+            //set.add(new BarDataSet(barEntries, myData.getToParse()));
+            int storeIndex = myData.getPhrase().indexOf(" ");
+            BarDataSet forHeadlines = new BarDataSet(barEntries, myData.getPhrase().substring(0, storeIndex));
+            forHeadlines.setColors(ColorTemplate.JOYFUL_COLORS);
+            set.add(forHeadlines);
         }
     }
 

@@ -1,30 +1,7 @@
 <resources>
     <string name="app_name">WNTPrototype</string>
-    <string name="title_home">Search</string>
-    <string name="title_dashboard">Format</string>
-    <string name="title_notifications">Email</string>
-    <string name="formatData">"Format "</string>
-    <string name="EmailData">Send</string>
-    <string name="SearchData">Search</string>
-    <string name="Default">No Filter</string>
-    <string name="filter_hint">Filter by Topic</string>
-    <string name="filter">Topics</string>
-    <string name="filter_hint_source">Filter by Source</string>
-    <string name="filter_source">Sources</string>
-    <string name="heading_filter">Filter Results</string>
     <string name="button_search">Search</string>
-    <string name="visualize_desc">Change Data Visualization</string>
-    <string name="x">X</string>
-    <string-array name="keywords">
-        <item> Ukraine </item>
-        <item> Japan </item>
-        <item> Wheaton </item>
-        <item> COVID </item>
-        <item> China </item>
-        <item> Medicine </item>
-        <item> Tom Brady </item>
-        <item> Lebron James </item>
-    </string-array>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="generate_word_map_button">Generate Word Map</string>
+    <string name="word_map_desc">Word Map</string>
 </resources>

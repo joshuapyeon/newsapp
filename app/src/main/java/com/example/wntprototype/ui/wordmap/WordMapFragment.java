@@ -1,62 +1,65 @@
 package com.example.wntprototype.ui.wordmap;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
+import com.example.wntprototype.APIWrappers.APIData;
+import com.example.wntprototype.APIWrappers.TrendingContent;
+import com.example.wntprototype.DataCache;
 import com.example.wntprototype.R;
 import com.example.wntprototype.databinding.FragmentWordMapBinding;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.List;
+
 
 public class WordMapFragment extends Fragment {
-    private FragmentWordMapBinding binding;
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        WordMapViewModel wordMapViewModel =
-                new ViewModelProvider(this).get(WordMapViewModel.class);
-
-        binding = FragmentWordMapBinding.inflate(inflater, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        FragmentWordMapBinding binding = FragmentWordMapBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textNotifications;
-        wordMapViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        Button confirmButton = root.findViewById(R.id.generate_button);
 
-        Button confirmButton = root.findViewById(R.id.button);
-        EditText emailText = (EditText) root.findViewById(R.id.editTextTextEmailAddress3);
+        confirmButton.setOnClickListener((view) -> {
+            List<TrendingContent> data = DataCache.getCache().getData();
+            if (data == null || data.isEmpty()) {
+                Toast.makeText(view.getContext(), "No data--try searching for something first!", Toast.LENGTH_LONG).show();
+                return;
+            }
 
-        //Log.d("storedEmail1", storedEmail);
-        confirmButton.setOnClickListener(new View.OnClickListener(){
+            try {
+                File file = new File(this.requireContext().getFilesDir().getPath() + "/input.txt");
+                if (!file.createNewFile())
+                    System.out.println("File exists, skipping creation");
+                if (file.setWritable(true)) {
+                    PrintStream ps = new PrintStream(file);
+                    for (TrendingContent a : data)
+                        ps.println(a.getPhrase());
+                    ps.close();
+                } else
+                    throw new IOException("Failed to write to input file :(");
 
-            @Override
-            public void onClick(View view){
-                //Log.d("storedEmail", storedEmail);
-                String storedEmail = emailText.getText().toString();
-                Toast.makeText(view.getContext(), "You have now stored your the following email account to share news: " + storedEmail, Toast.LENGTH_LONG).show();
-                //Snackbar.make(view, "You requested to receive an email to add a news source!", Snackbar.LENGTH_LONG)
-                //  .setAction("Action", null).show();
-           }
+                Toast.makeText(view.getContext(), "Generating Word map...", Toast.LENGTH_LONG).show();
+                Bitmap b = WordCloudGenerator.generateWordCloud(new String[]{"-inputpath", this.requireContext().getFilesDir().getPath() + "/input.txt", "-maxfsize", "100", "-minfsize", "40", "-fstep", "2"});
+                ((ImageView) WordMapFragment.this.requireView().findViewById(R.id.word_map_img)).setImageBitmap(b);
+                confirmButton.setVisibility(View.GONE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
 
         return root;
-
-
     }
-
-   @Override
-    public void onDestroyView() {
-       super.onDestroyView();
-        binding = null;
-    }
-
-
 }
