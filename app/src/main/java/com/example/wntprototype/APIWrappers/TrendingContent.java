@@ -21,21 +21,6 @@ public class TrendingContent {
     private int value;
 
     /**
-     * Says if the content has Articles
-     */
-    boolean hasArticles = false;
-
-    /**
-     * Says if the object has a phrase (it should)
-     */
-    boolean hasPhrase = false;
-
-    /**
-     * Says if this has a weight value
-     */
-    boolean hasValue = false;
-
-    /**
      * Gives access to the article list
      * @return The articles
      */
@@ -48,10 +33,17 @@ public class TrendingContent {
      * @param articles the articles related to the phrase
      */
     public void setArticles(List<NewsData> articles) {
-        if(articles != null || articles.size() > 0) {
+        if(articles != null && articles.size() > 0) {
             this.articles = articles;
-            this.hasArticles = true;
         }
+    }
+
+    /**
+     * Says if the trending content has Articles
+     * @return if this has articles
+     */
+    public boolean hasArticles(){
+        return articles != null && articles.size() > 0;
     }
 
     /**
@@ -67,10 +59,17 @@ public class TrendingContent {
      * @param phrase the trending phrase
      */
     public void setPhrase(String phrase) {
-        if(phrase != null || !phrase.equals("")) {
+        if(phrase != null && !phrase.equals("")) {
             this.phrase = phrase;
-            this.hasPhrase = true;
         }
+    }
+
+    /**
+     * Says if the trending content has a Phrase
+     * @return if this has a phrase
+     */
+    public boolean hasPhrase(){
+        return phrase != null && !phrase.equals("");
     }
 
     /**
@@ -88,7 +87,14 @@ public class TrendingContent {
     public void setValue(int value) {
         if(value > 0) {
             this.value = value;
-            this.hasValue = true;
         }
+    }
+
+    /**
+     * Says if the trending content has a value
+     * @return if this has a value
+     */
+    public boolean hasValue(){
+        return value > 0;
     }
 }
