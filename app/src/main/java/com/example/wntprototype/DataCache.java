@@ -1,6 +1,5 @@
 package com.example.wntprototype;
 
-import com.example.wntprototype.APIWrappers.APIData;
 import com.example.wntprototype.APIWrappers.TrendingContent;
 
 import java.util.List;

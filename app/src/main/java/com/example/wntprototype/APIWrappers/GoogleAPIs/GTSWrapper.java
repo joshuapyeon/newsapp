@@ -51,6 +51,7 @@ public class GTSWrapper extends AsyncTask<APISearch, Void, List<TrendingContent>
         try {
             JSONObject data = new JSONObject(text);
             JSONArray results = data.optJSONArray("results");
+            if(results == null) return null;
             for(int i = 0; i < results.length(); i++){
                 TrendingContent temp = new TrendingContent();
                 temp.setPhrase(results.optString(i));
