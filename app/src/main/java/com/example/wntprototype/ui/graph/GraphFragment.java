@@ -169,7 +169,7 @@ public class GraphFragment extends Fragment {
 
     /**
      * Creates the bar chart based on the
-     * data.
+     * data. Actually builds the bar chart.
      *
      * @return barData The bar chart data to be displayed
      */
