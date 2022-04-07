@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Lets the Strings convert back into Enums
      */
-    private Map<String, DataSource> stringToEnum = new HashMap<>();
+    private final Map<String, DataSource> stringToEnum = new HashMap<>();
 
     /**
      * Gives easy access to the currently selected data source
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * the global cache
      */
-    private DataCache cache = DataCache.getCache();
+    private final DataCache cache = DataCache.getCache();
 
     /**
      * The Main Activity xml Binding
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             stringToEnum.put(temp.toString(), temp);
             i++;
         }
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this.getBaseContext(), R.layout.dropdown_item, dataSources);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this.getBaseContext(), R.layout.dropdown_item, dataSources);
         binding.dataSearchText.setAdapter(arrayAdapter);
 
         //Hides the Search Drop Down
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         if (this.findViewById(R.id.generate_button) != null)
             this.findViewById(R.id.generate_button).setVisibility(View.VISIBLE);
         if (this.findViewById(R.id.word_map_img) != null)
-            ((ImageView)this.findViewById(R.id.word_map_img)).setImageBitmap(null);
+            ((ImageView) this.findViewById(R.id.word_map_img)).setImageBitmap(null);
 
         replaceFragment(getCurrVisualization());
     }
@@ -224,8 +224,7 @@ public class MainActivity extends AppCompatActivity {
      * This class is responsible for the real time accessibility of different buttons
      */
     private class onTextEdit implements TextWatcher {
-
-        private boolean isKeyword;
+        private final boolean isKeyword;
 
         public onTextEdit(boolean isKeyword) {
             this.isKeyword = isKeyword;
@@ -248,11 +247,7 @@ public class MainActivity extends AppCompatActivity {
         public void afterTextChanged(Editable editable) {
             if (currentDataSource.hasKeyword()) {
                 ((TextInputLayout) findViewById(R.id.search_bar)).setEnabled(true);
-                if (currentDataSource.requiresKeyword() && currentKeyword.equals("")) {
-                    ((Button) findViewById(R.id.button_search)).setEnabled(false);
-                } else {
-                    ((Button) findViewById(R.id.button_search)).setEnabled(true);
-                }
+                ((Button) findViewById(R.id.button_search)).setEnabled(!currentDataSource.requiresKeyword() || !currentKeyword.equals(""));
             } else {
                 ((TextInputLayout) findViewById(R.id.search_bar)).setEnabled(false);
                 ((Button) findViewById(R.id.button_search)).setEnabled(true);

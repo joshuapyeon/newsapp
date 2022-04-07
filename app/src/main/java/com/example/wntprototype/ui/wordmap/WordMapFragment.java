@@ -1,7 +1,6 @@
 package com.example.wntprototype.ui.wordmap;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.wntprototype.APIWrappers.APIData;
 import com.example.wntprototype.APIWrappers.TrendingContent;
 import com.example.wntprototype.DataCache;
 import com.example.wntprototype.R;
@@ -33,11 +31,11 @@ public class WordMapFragment extends Fragment {
         Button confirmButton = root.findViewById(R.id.generate_button);
 
         confirmButton.setOnClickListener((view) -> {
-            List<TrendingContent> data = DataCache.getCache().getData();
-            if (data == null || data.isEmpty()) {
+            if (DataCache.getCache().hasData()) {
                 Toast.makeText(view.getContext(), "No data--try searching for something first!", Toast.LENGTH_LONG).show();
                 return;
             }
+            List<TrendingContent> data = DataCache.getCache().getData();
 
             try {
                 File file = new File(this.requireContext().getFilesDir().getPath() + "/input.txt");
