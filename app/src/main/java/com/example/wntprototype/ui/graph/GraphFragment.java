@@ -37,7 +37,7 @@ public class GraphFragment extends Fragment {
      * for creating the structure of the graph
      */
 
-    private final int XMAX = 5;
+    private int XMAX = 5;
     private final String graphLabel = "Results & Values";
     /**
      * The bar chart to be displayed
@@ -113,6 +113,9 @@ public class GraphFragment extends Fragment {
             words.add(myData.getPhrase());
             values.add(myData.getValue());
 
+        }
+        if (values.size() < 5) {
+            XMAX = values.size();
         }
 
     }
