@@ -46,7 +46,6 @@ public class ListFragment extends Fragment {
         if (cache.hasData()) {
             searchList = DataCache.getCache().getData();
 
-            //TODO: Parse the APIData as a string.
             int numID = 1;
             for (TrendingContent api : searchList) {
                 apiToStringList.add("#" + numID++ + ": " + api.getPhrase());
