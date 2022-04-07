@@ -48,28 +48,26 @@ public class GraphFragment extends Fragment {
      * search (relevant articles or phrases)
      */
     List<TrendingContent> data;
-    ArrayList<String> words = new ArrayList<String>();
-    ArrayList<Integer> values = new ArrayList<Integer>();
-    /**
-     * Creates the binding for the
-     * graph fragment
-     */
-    private FragmentGraphBinding binding;
+    ArrayList<String> words = new ArrayList<>();
+    ArrayList<Integer> values = new ArrayList<>();
 
     /**
      * Method that builds the graph view based
      * on the user's search.
      *
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
+     * @param inflater provided by Android API
+     * @param container provided by Android API
+     * @param savedInstanceState provided by Android API
      * @return The Graph view
      */
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //setting up the Graph fragment with a FragmentGraphBinding
-        binding = FragmentGraphBinding.inflate(inflater, container, false);
+        /*
+         * Creates the binding for the
+         * graph fragment
+         */
+        com.example.wntprototype.databinding.FragmentGraphBinding binding = FragmentGraphBinding.inflate(inflater, container, false);
         View root = binding.getRoot(); //sets the view by getting the root
 
         barChart = root.findViewById(R.id.bargraph);
@@ -123,17 +121,15 @@ public class GraphFragment extends Fragment {
     private BarData makeBarData() {
         ArrayList<BarEntry> mappings = new ArrayList<>();
         for (int i = 0; i < XMAX; i++) {
-            int phraseNum = i;
             int thisNum = values.get(i);
             System.out.println(thisNum);
-            mappings.add(new BarEntry(phraseNum, thisNum));
+            mappings.add(new BarEntry(i, thisNum));
         }
         BarDataSet set = new BarDataSet(mappings, graphLabel);
         set.setColors(ColorTemplate.JOYFUL_COLORS);
         ArrayList<IBarDataSet> myDataSets = new ArrayList<>();
         myDataSets.add(set);
-        BarData currentData = new BarData(myDataSets);
-        return currentData;
+        return new BarData(myDataSets);
 
 
     }
