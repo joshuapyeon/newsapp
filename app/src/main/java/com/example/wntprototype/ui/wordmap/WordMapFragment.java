@@ -31,7 +31,7 @@ public class WordMapFragment extends Fragment {
         Button confirmButton = root.findViewById(R.id.generate_button);
 
         confirmButton.setOnClickListener((view) -> {
-            if (DataCache.getCache().hasData()) {
+            if (!DataCache.getCache().hasData()) {
                 Toast.makeText(view.getContext(), "No data--try searching for something first!", Toast.LENGTH_LONG).show();
                 return;
             }

@@ -17,11 +17,6 @@ public class DataCache {
     private List<TrendingContent> data = null;
 
     /**
-     * This variable checks of there is data (to help with null exception errors)
-     */
-    private Boolean dataNull = false;
-
-    /**
      * Private constructor
      */
     private DataCache() {
@@ -42,7 +37,7 @@ public class DataCache {
      * @return Says if there is data in the cache
      */
     public Boolean hasData() {
-        return dataNull;
+        return (data != null && data.size() > 0);
     }
 
     /**
@@ -60,19 +55,6 @@ public class DataCache {
      * @param data The data from the API data pull.
      */
     public void setData(List<TrendingContent> data) {
-        if (data != null) {
             this.data = data;
-            dataNull = true;
-        }else{
-            clearData();
-        }
-    }
-
-    /**
-     * Clears the Data in the Cache
-     */
-    public void clearData() {
-        data = null;
-        dataNull = false;
     }
 }
