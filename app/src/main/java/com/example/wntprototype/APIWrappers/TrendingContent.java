@@ -33,9 +33,7 @@ public class TrendingContent {
      * @param articles the articles related to the phrase
      */
     public void setArticles(List<NewsData> articles) {
-        if(articles != null && articles.size() > 0) {
-            this.articles = articles;
-        }
+        this.articles = articles;
     }
 
     /**
@@ -59,9 +57,7 @@ public class TrendingContent {
      * @param phrase the trending phrase
      */
     public void setPhrase(String phrase) {
-        if(phrase != null && !phrase.equals("")) {
-            this.phrase = phrase;
-        }
+        this.phrase = phrase;
     }
 
     /**
@@ -85,9 +81,7 @@ public class TrendingContent {
      * @param value the phrases value
      */
     public void setValue(int value) {
-        if(value > 0) {
-            this.value = value;
-        }
+        this.value = value;
     }
 
     /**
