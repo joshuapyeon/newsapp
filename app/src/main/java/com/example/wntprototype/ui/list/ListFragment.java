@@ -43,9 +43,8 @@ public class ListFragment extends Fragment {
         listFormat = root.findViewById(R.id.listView);
         if (cache.hasData()) {
             searchList = DataCache.getCache().getData();
-            int numID = 1;
             for (TrendingContent api : searchList)
-                apiToStringList.add("#" + numID++ + ": " + api.getPhrase());
+                apiToStringList.add(api.getPhrase());
             arrayAdapter = new ArrayAdapter<>(root.getContext(), android.R.layout.simple_list_item_1, apiToStringList);
             listFormat.setAdapter(arrayAdapter);
             listFormat.setOnItemClickListener((adapterView, view, i, l) -> {
