@@ -52,34 +52,22 @@ public class ListFragment extends Fragment {
                 Log.d("Number: ", i+"");
                 Snackbar sb = Snackbar.make(root, apiToStringList.get(i), Snackbar.LENGTH_SHORT);
                 sb.setAction("OPEN ARTICLE", view1 -> {
-                    NewsData nd = null;
-                    if(searchList.get(i).getArticles() != null)
-                        nd = searchList.get(i).getArticles().get(0);
-                    AlertDialog.Builder builder = new AlertDialog.Builder(root.getContext());
-                    if(nd != null) {
-                        if (nd.hasUrl()) {
-                            String url = nd.url;
-                            builder.setMessage(url);
-                            builder.setPositiveButton("See your Article", new DialogInterface.OnClickListener() {
-                                @Override
-                                /*
-                                 * Opens the url if there is one to go to.
-                                 */
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Intent openBrowser = new Intent();
-                                    openBrowser.setAction(Intent.ACTION_VIEW);
-                                    openBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
-                                    openBrowser.setData(Uri.parse(url));
-                                    startActivity(openBrowser);
-                                }
-                            });
-                        }
-                        else
-                            builder.setMessage("URL Unavailable");
+                    String URL = "";
+                    if(searchList.get(i).getArticles() != null && searchList.get(i).getArticles().get(0).hasUrl()) {
+                        URL = searchList.get(i).getArticles().get(0).url;
+                        Log.d("URL being parsed", URL);
+                        Intent openBrowser = new Intent();
+                        openBrowser.setAction(Intent.ACTION_VIEW);
+                        openBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
+                        openBrowser.setData(Uri.parse(URL));
+                        startActivity(openBrowser);
                     }
-                    else builder.setMessage("URL Unavailable");
-                    AlertDialog urlLink = builder.create();
-                    urlLink.show();
+                    else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(root.getContext());
+                        builder.setMessage("URL Unavailable");
+                        AlertDialog urlLink = builder.create();
+                        urlLink.show();
+                    }
                 });
                 sb.show();
             });
