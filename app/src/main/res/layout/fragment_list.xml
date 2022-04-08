@@ -7,7 +7,7 @@
     tools:context=".ui.list.ListFragment">
 
     <ListView
-        android:id="@+id/listFormat"
+        android:id="@+id/listView"
         android:layout_width="409dp"
         android:layout_height="729dp"
         android:layout_marginStart="1dp"

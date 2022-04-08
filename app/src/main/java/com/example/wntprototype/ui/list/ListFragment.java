@@ -40,7 +40,7 @@ public class ListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        listFormat = root.findViewById(R.id.listFormat);
+        listFormat = root.findViewById(R.id.listView);
         if (cache.hasData()) {
             searchList = DataCache.getCache().getData();
             int numID = 1;
@@ -52,9 +52,8 @@ public class ListFragment extends Fragment {
                 Log.d("Number: ", i+"");
                 Snackbar sb = Snackbar.make(root, apiToStringList.get(i), Snackbar.LENGTH_SHORT);
                 sb.setAction("OPEN ARTICLE", view1 -> {
-                    String URL = "";
                     if(searchList.get(i).getArticles() != null && searchList.get(i).getArticles().get(0).hasUrl()) {
-                        URL = searchList.get(i).getArticles().get(0).url;
+                        String URL = searchList.get(i).getArticles().get(0).url;
                         Log.d("URL being parsed", URL);
                         Intent openBrowser = new Intent();
                         openBrowser.setAction(Intent.ACTION_VIEW);
