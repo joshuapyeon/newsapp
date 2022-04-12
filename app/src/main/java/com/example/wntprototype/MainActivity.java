@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void afterTextChanged(Editable editable) {
-            if (currentDataSource.hasKeyword()) {
+            if (currentDataSource != null && currentDataSource.hasKeyword()) {
                 ((TextInputLayout) findViewById(R.id.search_bar)).setEnabled(true);
                 ((Button) findViewById(R.id.button_search)).setEnabled(!currentDataSource.requiresKeyword() || !currentKeyword.equals(""));
             } else {

@@ -1,6 +1,7 @@
 package com.example.wntprototype.ui.wordmap;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +51,7 @@ public class WordMapFragment extends Fragment {
                     throw new IOException("Failed to write to input file :(");
 
                 Toast.makeText(view.getContext(), "Generating Word map...", Toast.LENGTH_LONG).show();
-                Bitmap b = WordCloudGenerator.generateWordCloud(new String[]{"-inputpath", this.requireContext().getFilesDir().getPath() + "/input.txt", "-maxfsize", "100", "-minfsize", "40", "-fstep", "2"});
+                Bitmap b = WordCloudGenerator.generateWordCloud(0xFF000000, 0xFF000000, 50, 35, 2, 100, 2, BitmapFactory.decodeResource(this.requireContext().getResources(), R.drawable.mask_circle_300), null, this.requireContext().getFilesDir().getPath() + "/input.txt");
                 ((ImageView) WordMapFragment.this.requireView().findViewById(R.id.word_map_img)).setImageBitmap(b);
                 confirmButton.setVisibility(View.GONE);
             } catch (IOException e) {
