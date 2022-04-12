@@ -4,15 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Build;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Random;
@@ -28,16 +27,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author Luke Greene
  */
 public class WordCloudGenerator {
-    private static final Random RAND = new Random();
-    private static Bitmap colorImage;
     private static boolean useColorSurface = true;
+    private static final Random RAND = new Random();
     private static final String[] rmFromEnd = { ")", ".", "\"", "'", ";", ":", ",", "}", "]", ">", "?" };
     private static final String[] rmFromBegin = { "(", "\"", "'", ";", ":", ",", "{", "[", "<", "?" };
     private static final String[] stopwords = { "and", "that", "there", "that's", "there's", "don't", "have", "the", "but",
             "for", "into", "out", "be", "you", "are", "they", "their", "your", "yours", "theirs", "his", "hers", "he",
-            "she", "her", "him", "them" };
+            "she", "her", "him", "them", "with", "what", "after", "over", "let", "may" };
 
-    private final Bitmap maskImage;
     private final Bitmap outputImage;
     private final int[] maxwidthrow;
     private final int[][] countmat;
@@ -54,76 +51,27 @@ public class WordCloudGenerator {
     private static int font_step = 2;
     private static int mini_font_size = 5;
     private static int words_margin = 2;
-    private static double maxSize = 100.0;
-    private static String maskPath = "mask.png";
-    private static String colorPath = "";
-    private static String inputPath = "input.txt";
+    private static Bitmap maskImage = null;
+    private static Bitmap colorImage = null;
 
-    public static Bitmap generateWordCloud(String[] args) {
-        for (int i = 0; i < args.length; i += 2) {
-            switch (args[i]) {
-                case "-mrgb":
-                    MASKRGB = Integer.parseInt(args[i + 1], 16);
-                    break;
-                case "-brgb":
-                    PAINTRGB = Integer.parseInt(args[i + 1], 16);
-                    break;
-                case "-vpref":
-                    vertical_preference = Integer.parseInt(args[i + 1]);
-                    break;
-                case "-fstep":
-                    font_step = Integer.parseInt(args[i + 1]);
-                    break;
-                case "-minfsize":
-                    mini_font_size = Integer.parseInt(args[i + 1]);
-                    break;
-                case "-maxfsize":
-                    maxSize = Double.parseDouble(args[i + 1]);
-                case "-wmargin":
-                    words_margin = Integer.parseInt(args[i + 1]);
-                    break;
-                case "-maskpath":
-                    maskPath = args[i + 1];
-                    break;
-                case "-colorpath":
-                    colorPath = args[i + 1];
-                    break;
-                case "-inputpath":
-                    inputPath = args[i + 1];
-                    break;
-                default:
-                    System.out.println("WARNING: Unknown argument " + args[i]);
-            }
-        }
+    public static Bitmap generateWordCloud(int mrgb, int brgb, int vpref, int fstep, int minfsize, int maxfsize, int wmargin, Bitmap maskImg, Bitmap colorImg, String inputPth) {
+        MASKRGB = mrgb;
+        PAINTRGB = brgb;
+        vertical_preference = vpref;
+        font_step = fstep;
+        mini_font_size = minfsize;
+        words_margin = wmargin;
+        maskImage = maskImg;
+        colorImage = colorImg;
 
-        try {
-            File color = new File(colorPath);
-            Buffer colorBuffer = ByteBuffer.allocate(42000);
-            FileInputStream colorStream = new FileInputStream(color);
-            while (colorStream.read((byte[]) colorBuffer.array()) > 0)
-                colorImage.copyPixelsFromBuffer(colorBuffer);
-            colorImage = Bitmap.createBitmap(900, 900, Bitmap.Config.ARGB_8888);
-        } catch (IOException e) {
-            System.out.println("Invalid or nonexistant color image provided, using random colors");
+        WordCloudGenerator wc = new WordCloudGenerator(maskImage);
+
+        if (colorImage == null)
             useColorSurface = false;
-        }
 
-        WordCloudGenerator wc = null;
-        try {
-            File mask = new File(maskPath);
-            Buffer maskBuffer = ByteBuffer.allocate(42000);
-            FileInputStream maskStream = new FileInputStream(mask);
-            while (maskStream.read((byte[]) maskBuffer.array()) > 0)
-                colorImage.copyPixelsFromBuffer(maskBuffer);
-            colorImage = Bitmap.createBitmap(900, 900, Bitmap.Config.ARGB_8888);
-        } catch (IOException e) {
-            System.out.println("Mask file not found; creating new one...");
-            wc = new WordCloudGenerator(null);
-        }
-
-        File file = new File(inputPath);
-        // Essentially use this map as a bag
-        Map<String, Integer> wordsList = new HashMap<>();
+        File file = new File(inputPth);
+        // Essentially use this list as a bag, but we need to sort it
+        List<Entry<String, Integer>> wordsList = new ArrayList<>();
         System.out.println("Creating words list...");
         Scanner s = null;
 
@@ -154,20 +102,26 @@ public class WordCloudGenerator {
                         flag = true;
 
                 if (str.length() >= 3 && !flag) {
-                    int size = (wordsList.get(str) == null ? 0 : wordsList.get(str)) + 1;
+                    int size = 0;
+                    for (Entry<String, Integer> e : wordsList)
+                        if (str.equals(e.getKey()))
+                            e.setValue(size = e.getValue() + 1);
+                    if (size == 0)
+                        wordsList.add(new AbstractMap.SimpleEntry<>(str, 1));
                     if (size > largest)
                         largest = size;
-                    wordsList.put(str, size);
                 }
             }
         }
 
-        double multiplier = maxSize / largest;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            wordsList.sort(Comparator.comparingInt(Entry<String, Integer>::getValue).reversed());
+        double multiplier = (double) maxfsize / largest;
         System.out.println("Painting words...");
         boolean flag = true;
         do {
-            for (Entry<String, Integer> e : wordsList.entrySet())
-                if (wc != null && !wc.paintWord(wc.graphics, e.getKey(), (int) ((double) e.getValue() * multiplier)))
+            for (Entry<String, Integer> e : wordsList)
+                if (!wc.paintWord(wc.graphics, e.getKey(), (int) ((double) e.getValue() * multiplier)))
                     flag = false;
         } while (flag);
         //wc.writeImage(outputPath);
@@ -182,7 +136,7 @@ public class WordCloudGenerator {
                 for (int j = 0; j < maskImage.getHeight(); j++)
                     maskImage.setPixel(i, j, MASKRGB);
         }
-        this.maskImage = maskImage;
+        WordCloudGenerator.maskImage = maskImage;
         this.outputImage = Bitmap.createBitmap(maskImage.getWidth(), maskImage.getHeight(), Bitmap.Config.ARGB_8888);
         this.maxwidthrow = new int[maskImage.getHeight()];
         this.countmat = new int[maskImage.getWidth()][maskImage.getHeight()];
@@ -210,15 +164,15 @@ public class WordCloudGenerator {
     private Point findFreeRectangle(int bbWidth, int bbHeight) {
         int lasty = 0, firsty = 0;
         int the_x_pos = -1, the_y_pos = -1, solcount = 0;
-        while (lasty < this.maskImage.getHeight()) {
-            while (lasty < this.maskImage.getHeight() && (maxwidthrow[lasty] >= bbWidth)) {
+        while (lasty < maskImage.getHeight()) {
+            while (lasty < maskImage.getHeight() && (maxwidthrow[lasty] >= bbWidth)) {
                 lasty++;
             }
             if (lasty - firsty >= bbHeight) {
-                for (int x = 0; x < this.maskImage.getWidth(); ++x)
+                for (int x = 0; x < maskImage.getWidth(); ++x)
                     scanner[x] = 0;
                 for (int y = firsty; y < lasty; ++y)
-                    for (int x = bbWidth; x < this.maskImage.getWidth(); ++x)
+                    for (int x = bbWidth; x < maskImage.getWidth(); ++x)
                         if (countmat[x][y] < bbWidth) {
                             scanner[x] = 0;
                         } else {
@@ -254,8 +208,8 @@ public class WordCloudGenerator {
         // using BFS, not cache friendly and could be improved
         if (margin > 0) {
             Queue<Point> thequeue = new ConcurrentLinkedQueue<>();
-            int upY = Math.min(posy + bbHeight, this.maskImage.getHeight());
-            int upX = Math.min(posx + bbWidth, this.maskImage.getWidth());
+            int upY = Math.min(posy + bbHeight, maskImage.getHeight());
+            int upX = Math.min(posx + bbWidth, maskImage.getWidth());
             for (int y = posy; y < upY; ++y)
                 for (int x = posx; x < upX; ++x) {
                     if ((this.outputImage.getPixel(x, y) & 0xFF0000FF) > 0) {
@@ -274,7 +228,7 @@ public class WordCloudGenerator {
                     if (v > 0)
                         thequeue.add(new Point(x - 1, y));
                 }
-                if (x < this.maskImage.getWidth() - 1 && (this.outputImage.getPixel(x + 1, y) & 0xFF0000FF) == 0) {
+                if (x < maskImage.getWidth() - 1 && (this.outputImage.getPixel(x + 1, y) & 0xFF0000FF) == 0) {
                     this.outputImage.setPixel(x + 1, y, (this.outputImage.getPixel(x + 1, y) & 0xFFFFFF00) | v);
                     if (v > 0)
                         thequeue.add(new Point(x + 1, y));
@@ -284,7 +238,7 @@ public class WordCloudGenerator {
                     if (v > 0)
                         thequeue.add(new Point(x, y - 1));
                 }
-                if (y < this.maskImage.getHeight() - 1 && (this.outputImage.getPixel(x, y + 1) & 0xFF0000FF) == 0) {
+                if (y < maskImage.getHeight() - 1 && (this.outputImage.getPixel(x, y + 1) & 0xFF0000FF) == 0) {
                     this.outputImage.setPixel(x, y + 1, (this.outputImage.getPixel(x, y + 1) & 0xFFFFFF00) | v);
                     if (v > 0)
                         thequeue.add(new Point(x, y + 1));
@@ -295,9 +249,9 @@ public class WordCloudGenerator {
 
     private void freezeImage(int posx, int posy, int bbWidth, int bbHeight, int margin) {
         int lowerx = Math.max(0, posx - margin);
-        int upperx = Math.min(this.maskImage.getWidth(), posx + bbWidth + margin);
+        int upperx = Math.min(maskImage.getWidth(), posx + bbWidth + margin);
         int lowery = Math.max(0, posy - bbHeight - margin);
-        int uppery = Math.min(this.maskImage.getHeight(), posy + margin);
+        int uppery = Math.min(maskImage.getHeight(), posy + margin);
 
         for (int y = lowery; y < uppery; ++y) {
             int maxremoved = 0;
@@ -306,7 +260,7 @@ public class WordCloudGenerator {
                 // put pixel
                 int other = countmat[x][y];
                 int count = 0;
-                for (int x2 = x; x2 < this.maskImage.getWidth() && countmat[x2][y] > 0; ++x2) {
+                for (int x2 = x; x2 < maskImage.getWidth() && countmat[x2][y] > 0; ++x2) {
                     other = countmat[x2][y];
                     countmat[x2][y] = count++;
                 }
@@ -317,7 +271,7 @@ public class WordCloudGenerator {
             }
             if (maxremoved >= maxwidthrow[y]) {
                 maxwidthrow[y] = countmat[0][y];
-                for (int x = 1; x < this.maskImage.getWidth(); ++x)
+                for (int x = 1; x < maskImage.getWidth(); ++x)
                     if (countmat[x][y] > maxwidthrow[y])
                         maxwidthrow[y] = countmat[x][y];
             }
@@ -348,7 +302,7 @@ public class WordCloudGenerator {
             Paint paint = new Paint();
             paint.setTextSize((float)initialFontSz);
             Rect extents = new Rect();
-            paint.getTextBounds(text, 0, 0, extents);
+            paint.getTextBounds(text, 0, text.length(), extents);
             double bbWidth = extents.width();
             double bbHeight = extents.height();
             double x_bearing = extents.left;
@@ -396,7 +350,7 @@ public class WordCloudGenerator {
                 dilateImage(bbposx, (int) (bbposy - (bbHeight - 1)), (int) bbWidth, (int) bbHeight, words_margin);
 
                 // freeze updates the "RLSA like" matrix and erases the content
-                freezeImage(bbposx, (int) bbposy, (int) bbWidth, (int) bbHeight, words_margin);
+                freezeImage(bbposx, bbposy, (int) bbWidth, (int) bbHeight, words_margin);
 
                 graphics.restore();
                 return true;
