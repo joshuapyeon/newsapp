@@ -33,7 +33,8 @@ public class WordCloudGenerator {
     private static final String[] rmFromBegin = { "(", "\"", "'", ";", ":", ",", "{", "[", "<", "?" };
     private static final String[] stopwords = { "and", "that", "there", "that's", "there's", "don't", "have", "the", "but",
             "for", "into", "out", "be", "you", "are", "they", "their", "your", "yours", "theirs", "his", "hers", "he",
-            "she", "her", "him", "them", "with", "what", "after", "over", "let", "may" };
+            "she", "her", "him", "them", "with", "what", "after", "over", "let", "may", "it's", "its", "where", "about",
+            "had" };
 
     private final Bitmap outputImage;
     private final int[] maxwidthrow;

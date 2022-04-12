@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +23,13 @@ import com.example.wntprototype.APIWrappers.TrendingContent;
 import com.example.wntprototype.DataCache;
 import com.example.wntprototype.R;
 import com.example.wntprototype.databinding.FragmentListBinding;
+import com.example.wntprototype.ui.Shareable;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment implements Shareable {
     DataCache cache = DataCache.getCache();
     List<TrendingContent> searchList;
     List<String> apiToStringList = new ArrayList<>();
@@ -79,5 +82,18 @@ public class ListFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public String getSharingType() {
+        return "text/plain";
+    }
+
+    @Override
+    public Object getSharingContent() {
+        String list = "";
+        for (int i = 0; i < apiToStringList.size(); i++)
+            list = list.concat(apiToStringList.get(i) + "\n");
+        return list;
     }
 }

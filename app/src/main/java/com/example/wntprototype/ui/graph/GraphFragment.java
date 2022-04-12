@@ -1,6 +1,7 @@
 package com.example.wntprototype.ui.graph;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.example.wntprototype.APIWrappers.TrendingContent;
 import com.example.wntprototype.DataCache;
 import com.example.wntprototype.R;
 import com.example.wntprototype.databinding.FragmentGraphBinding;
+import com.example.wntprototype.ui.Shareable;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -27,7 +29,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GraphFragment extends Fragment {
+public class GraphFragment extends Fragment implements Shareable {
 
     /**
      * Cache that holds the cached data
@@ -193,4 +195,13 @@ public class GraphFragment extends Fragment {
 
     }
 
+    @Override
+    public String getSharingType() {
+        return "image/png";
+    }
+
+    @Override
+    public Parcelable getSharingContent() {
+        return binding.bargraph.getChartBitmap();
+    }
 }
