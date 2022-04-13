@@ -57,20 +57,16 @@ public class ListFragment extends Fragment implements Shareable {
         listFormat = root.findViewById(R.id.listView);
         if (cache.hasData()) {
             searchList = DataCache.getCache().getData();
-            /*
-             * TODO: Parse the imageURL, and ArticleURL into an array adapter for the ListView
-             */
+
+
             for (TrendingContent api : searchList) {
                 apiToStringList.add(api.getPhrase());
                 getNewsData(api.getArticles());
             }
-            Log.d("Something went wrong ", "BEFORE NewsAdapter");
-            //arrayAdapter = new ArrayAdapter<>(root.getContext(), android.R.layout.simple_list_item_1, apiToStringList);
             newsAdapter = new NewsAdapter(root.getContext(), R.layout.list_row, newsDataList);
             listFormat.setAdapter(newsAdapter);
-            /*listFormat.setOnItemClickListener((adapterView, view, i, l) -> {
-                Log.d("Number: ", i+"");
-                Snackbar sb = Snackbar.make(root, apiToStringList.get(i), Snackbar.LENGTH_SHORT);
+            listFormat.setOnItemClickListener((adapterView, view, i , l) -> {
+                Snackbar sb = Snackbar.make(root, newsDataList.get(i).title, Snackbar.LENGTH_SHORT);
                 sb.setAction("OPEN ARTICLE", view1 -> {
                     if(searchList.get(i).getArticles() != null && searchList.get(i).getArticles().get(0).hasUrl()) {
                         String URL = searchList.get(i).getArticles().get(0).url;
@@ -89,7 +85,7 @@ public class ListFragment extends Fragment implements Shareable {
                     }
                 });
                 sb.show();
-            });*/
+            });
         }
 
         return root;
