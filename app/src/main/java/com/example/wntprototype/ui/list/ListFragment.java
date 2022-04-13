@@ -45,6 +45,7 @@ public class ListFragment extends Fragment implements Shareable {
      * @param NDList The list of NewsData objects in a TrendingContent object
      */
     public void getNewsData(List<NewsData> NDList) {
+        if(NDList == null) return;
         for(int i = 0; i < NDList.size(); i++) {
             newsDataList.add(NDList.get(i));
         }

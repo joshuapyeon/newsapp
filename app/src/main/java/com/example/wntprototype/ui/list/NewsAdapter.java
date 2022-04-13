@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.renderscript.ScriptGroup;
 import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,12 @@ public class NewsAdapter extends ArrayAdapter<NewsData> {
         mContext = context;
         mResource = resource;
     }
+
+    /**
+     * Helper method. Supposed to turn an imageURL String to a Drawable. DOES NOT WORK
+     * @param news The NewsData item containing the imageURL
+     * @return A Drawable of the imageURL
+     */
     private Drawable urlToInt(NewsData news) {
         if(news.hasUrlToImage()) {
             String image = news.urlToImage;
@@ -53,7 +60,8 @@ public class NewsAdapter extends ArrayAdapter<NewsData> {
         tv = convertView.findViewById(R.id.txtName);
         Drawable parsedImage = urlToInt(getItem(position));
         tv.setText(getItem(position).title);
-        iv.setImageDrawable(parsedImage);
+        if(parsedImage != null) iv.setImageDrawable(parsedImage);
+        else Log.d("parsedImage", "IS NULL!");
         return convertView;
     }
 
