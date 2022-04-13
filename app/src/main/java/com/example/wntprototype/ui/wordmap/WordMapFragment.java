@@ -3,6 +3,7 @@ package com.example.wntprototype.ui.wordmap;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.example.wntprototype.APIWrappers.TrendingContent;
 import com.example.wntprototype.DataCache;
 import com.example.wntprototype.R;
 import com.example.wntprototype.databinding.FragmentWordMapBinding;
+import com.example.wntprototype.ui.Shareable;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +26,9 @@ import java.io.PrintStream;
 import java.util.List;
 
 
-public class WordMapFragment extends Fragment {
+public class WordMapFragment extends Fragment implements Shareable {
+    private static Bitmap word_map_img = null;
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         FragmentWordMapBinding binding = FragmentWordMapBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -51,8 +55,8 @@ public class WordMapFragment extends Fragment {
                     throw new IOException("Failed to write to input file :(");
 
                 Toast.makeText(view.getContext(), "Generating Word map...", Toast.LENGTH_LONG).show();
-                Bitmap b = WordCloudGenerator.generateWordCloud(0xFF000000, 0xFF000000, 50, 35, 2, 100, 2, BitmapFactory.decodeResource(this.requireContext().getResources(), R.drawable.mask_circle_300), null, this.requireContext().getFilesDir().getPath() + "/input.txt");
-                ((ImageView) WordMapFragment.this.requireView().findViewById(R.id.word_map_img)).setImageBitmap(b);
+                word_map_img = WordCloudGenerator.generateWordCloud(0xFF000000, 0xFF000000, 50, 35, 2, 100, 2, BitmapFactory.decodeResource(this.requireContext().getResources(), R.drawable.mask_circle_300), null, this.requireContext().getFilesDir().getPath() + "/input.txt");
+                ((ImageView) WordMapFragment.this.requireView().findViewById(R.id.word_map_img)).setImageBitmap(word_map_img);
                 confirmButton.setVisibility(View.GONE);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -60,5 +64,15 @@ public class WordMapFragment extends Fragment {
         });
 
         return root;
+    }
+
+    @Override
+    public String getSharingType() {
+        return "image/png";
+    }
+
+    @Override
+    public Parcelable getSharingContent() {
+        return word_map_img;
     }
 }

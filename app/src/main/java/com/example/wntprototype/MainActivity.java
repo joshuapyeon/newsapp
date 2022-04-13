@@ -1,11 +1,13 @@
 package com.example.wntprototype;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -17,6 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -24,6 +27,7 @@ import com.example.wntprototype.APIWrappers.APISearch;
 import com.example.wntprototype.APIWrappers.DataManager;
 import com.example.wntprototype.APIWrappers.DataSource;
 import com.example.wntprototype.databinding.ActivityMainBinding;
+import com.example.wntprototype.ui.Shareable;
 import com.example.wntprototype.ui.graph.GraphFragment;
 import com.example.wntprototype.ui.list.ListFragment;
 import com.example.wntprototype.ui.wordmap.WordMapFragment;
@@ -65,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
      * The current fragment value that we are seeing
      */
     private int currVisualization = 0;
+    private Fragment currVisualizationFrag = new ListFragment();
 
     /**
      * the global cache
@@ -123,18 +128,23 @@ public class MainActivity extends AppCompatActivity {
 
         //Sets the onClickListener for the Share button
         findViewById(R.id.share_button).setOnClickListener((u1) -> {
-            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && currVisualizationFrag instanceof Shareable) {
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                Shareable s = (Shareable)currVisualizationFrag;
 
-            // This will be the type of content; maybe PNG/JPEG image?
-            sharingIntent.setType("text/plain");
+                // This will be the type of content; maybe PNG/JPEG image?
+                sharingIntent.setType(s.getSharingType());
 
-            // Body of the content; maybe different types later
-            String shareBody = "The stuff we wanted to share";
-            String shareSubject = "Subject of the stuff we wanted to share";
+                // Body of the content; maybe different types later
+                String shareSubject = currentKeyword + " " + visualizations[currVisualization];
 
-            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-            sharingIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
-            startActivity(Intent.createChooser(sharingIntent, "Share using"));
+                if (sharingIntent.getType().equals("text/plain"))
+                    sharingIntent.putExtra(Intent.EXTRA_TEXT, (String) s.getSharingContent());
+                else
+                    sharingIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, (Parcelable) s.getSharingContent());
+                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
+                startActivity(Intent.createChooser(sharingIntent, "Share using"));
+            }
         });
     }
 
@@ -217,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
                 dest = new WordMapFragment();
                 break;
         }
+        currVisualizationFrag = dest;
         return dest;
     }
 
