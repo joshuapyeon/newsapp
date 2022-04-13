@@ -33,11 +33,22 @@ public class ListFragment extends Fragment implements Shareable {
     DataCache cache = DataCache.getCache();
     List<TrendingContent> searchList;
     List<String> apiToStringList = new ArrayList<>();
-    List<NewsData> newsDataList = new ArrayList<NewsData>();
+    ArrayList<NewsData> newsDataList = new ArrayList<NewsData>();
     private FragmentListBinding binding;
     ListView listFormat;
     ArrayAdapter<String> arrayAdapter;
+    NewsAdapter newsAdapter;
 
+    /**
+     * Helper method. Retrieves all available NewsData objects from a TrendingContent object
+     * PRECONDITION: There is at least 1 NewsData objects in NDList
+     * @param NDList The list of NewsData objects in a TrendingContent object
+     */
+    public void getNewsData(List<NewsData> NDList) {
+        for(int i = 0; i < NDList.size(); i++) {
+            newsDataList.add(NDList.get(i));
+        }
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,11 +57,18 @@ public class ListFragment extends Fragment implements Shareable {
         listFormat = root.findViewById(R.id.listView);
         if (cache.hasData()) {
             searchList = DataCache.getCache().getData();
-            for (TrendingContent api : searchList)
+            /*
+             * TODO: Parse the imageURL, and ArticleURL into an array adapter for the ListView
+             */
+            for (TrendingContent api : searchList) {
                 apiToStringList.add(api.getPhrase());
-            arrayAdapter = new ArrayAdapter<>(root.getContext(), android.R.layout.simple_list_item_1, apiToStringList);
-            listFormat.setAdapter(arrayAdapter);
-            listFormat.setOnItemClickListener((adapterView, view, i, l) -> {
+                getNewsData(api.getArticles());
+            }
+            Log.d("Something went wrong ", "BEFORE NewsAdapter");
+            //arrayAdapter = new ArrayAdapter<>(root.getContext(), android.R.layout.simple_list_item_1, apiToStringList);
+            newsAdapter = new NewsAdapter(root.getContext(), R.layout.list_row, newsDataList);
+            listFormat.setAdapter(newsAdapter);
+            /*listFormat.setOnItemClickListener((adapterView, view, i, l) -> {
                 Log.d("Number: ", i+"");
                 Snackbar sb = Snackbar.make(root, apiToStringList.get(i), Snackbar.LENGTH_SHORT);
                 sb.setAction("OPEN ARTICLE", view1 -> {
@@ -71,7 +89,7 @@ public class ListFragment extends Fragment implements Shareable {
                     }
                 });
                 sb.show();
-            });
+            });*/
         }
 
         return root;
