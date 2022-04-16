@@ -131,6 +131,7 @@ public class GraphFragment extends Fragment implements Shareable {
                 return store;
             }
         });
+        xAxis.setGranularityEnabled(true);
         xAxis.setTextSize(12f);
 
 
