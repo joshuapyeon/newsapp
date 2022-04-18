@@ -49,6 +49,7 @@ public class ListFragment extends Fragment implements Shareable {
         for(int i = 0; i < NDList.size(); i++) {
             newsDataList.add(NDList.get(i));
         }
+        Log.d("Size of newsDataList",newsDataList.size()+"");
     }
     @Nullable
     @Override
@@ -65,7 +66,9 @@ public class ListFragment extends Fragment implements Shareable {
                 getNewsData(api.getArticles());
             }
             newsAdapter = new NewsAdapter(root.getContext(), R.layout.list_row, newsDataList);
-            listFormat.setAdapter(newsAdapter);
+            //TODO: Might have to do some strategy pattern shenanigans due to problems with different APIWrappers.
+            arrayAdapter = new ArrayAdapter<>(root.getContext(), android.R.layout.simple_list_item_1, apiToStringList);
+            listFormat.setAdapter(arrayAdapter);
             listFormat.setOnItemClickListener((adapterView, view, i , l) -> {
                 Snackbar sb = Snackbar.make(root, newsDataList.get(i).title, Snackbar.LENGTH_SHORT);
                 sb.setAction("OPEN ARTICLE", view1 -> {
