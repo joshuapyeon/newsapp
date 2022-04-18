@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Sets the onClickListener for the Share button
         findViewById(R.id.share_button).setOnClickListener((u1) -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && currVisualizationFrag instanceof Shareable) {
+            if (currVisualizationFrag instanceof Shareable) {
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 Shareable s = (Shareable)currVisualizationFrag;
 
