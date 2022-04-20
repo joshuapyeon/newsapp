@@ -1,13 +1,12 @@
 package com.example.wntprototype;
 
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -19,7 +18,6 @@ import androidx.fragment.app.FragmentTransaction;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -34,8 +32,7 @@ import com.example.wntprototype.ui.wordmap.WordMapFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+import java.io.File;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -144,11 +141,11 @@ public class MainActivity extends AppCompatActivity {
 
                 // Body of the content; maybe different types later
                 String shareSubject = currentKeyword + " " + visualizations[currVisualization];
-
+                //Need to use a ContentProvider... why... why... why...
                 if (sharingIntent.getType().equals("text/plain"))
                     sharingIntent.putExtra(Intent.EXTRA_TEXT, (String) s.getSharingContent());
                 else
-                    sharingIntent.putExtra(Intent.EXTRA_CHOSEN_COMPONENT, ((ByteArrayOutputStream) s.getSharingContent()).toByteArray());
+                    sharingIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(((File) s.getSharingContent())));
                 sharingIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
                 startActivity(Intent.createChooser(sharingIntent, "Share using"));
             }
@@ -222,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
      * @return The Fragment of the current visualization
      */
     private Fragment getCurrVisualization() {
-        /**
+        /*
          * The current display.
          */
         Fragment dest;

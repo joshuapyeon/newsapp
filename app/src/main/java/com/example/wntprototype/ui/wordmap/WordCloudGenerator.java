@@ -296,7 +296,7 @@ public class WordCloudGenerator {
                 (RAND.nextInt(155) + 100.0) / 255.0);
     }
 
-    boolean paintWord(Canvas graphics, String text, double initialFontSz) {
+    private boolean paintWord(Canvas graphics, String text, double initialFontSz) {
         int fontSize = (int) initialFontSz;
         boolean vertical = choose_vertical();
         while (fontSize >= mini_font_size) {
@@ -305,35 +305,35 @@ public class WordCloudGenerator {
             Rect extents = new Rect();
             paint.getTextBounds(text, 0, text.length(), extents);
             double bbWidth = extents.width();
-            double bbHeight = extents.height();
-            double x_bearing = extents.left;
+            double bbH = extents.height();
+            double eks_bearing = extents.left;
             double y_bearing = extents.top;
 
             int textposx, textposy, bbposx, bbposy;
             if (vertical) {
-                double temp = bbHeight;
-                bbHeight = bbWidth;
+                double temp = bbH;
+                bbH = bbWidth;
                 bbWidth = temp;
-                temp = x_bearing;
-                x_bearing = y_bearing;
+                temp = eks_bearing;
+                eks_bearing = y_bearing;
                 y_bearing = temp;
             }
             // returns lower left corner
-            Point p = findFreeRectangle((int) bbWidth, (int) bbHeight);
+            Point p = findFreeRectangle((int) bbWidth, (int) bbH);
             if (p != null) {
                 bbposx = p.x;
                 bbposy = p.y;
                 // adjust positions to be used by show_text method
-                textposx = (int) (bbposx - x_bearing);
+                textposx = (int) (bbposx - eks_bearing);
                 textposy = bbposy;
                 if (vertical)
                     textposy += y_bearing;
                 else
-                    textposy -= bbHeight + y_bearing;
+                    textposy -= bbH + y_bearing;
 
                 Vector3 rgb;
                 if (useColorSurface)
-                    rgb = getMeanColor(bbposx, (int) (bbposy - bbHeight), (int) bbWidth, (int) bbHeight);
+                    rgb = getMeanColor(bbposx, (int) (bbposy - bbH), (int) bbWidth, (int) bbH);
                 else
                     rgb = pickRandomColor();
 
@@ -348,10 +348,10 @@ public class WordCloudGenerator {
                 graphics.drawText(text, 0, 0, paint);
 
                 // expects upper left corner
-                dilateImage(bbposx, (int) (bbposy - (bbHeight - 1)), (int) bbWidth, (int) bbHeight, words_margin);
+                dilateImage(bbposx, (int) (bbposy - (bbH - 1)), (int) bbWidth, (int) bbH, words_margin);
 
                 // freeze updates the "RLSA like" matrix and erases the content
-                freezeImage(bbposx, bbposy, (int) bbWidth, (int) bbHeight, words_margin);
+                freezeImage(bbposx, bbposy, (int) bbWidth, (int) bbH, words_margin);
 
                 graphics.restore();
                 return true;
