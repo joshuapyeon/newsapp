@@ -1,8 +1,6 @@
 package com.example.wntprototype.APIWrappers;
 
-import com.example.wntprototype.APIWrappers.APIData;
-
-public class NewsData extends APIData {
+public class NewsData {
 
     /**
      * The title of an article
@@ -69,8 +67,4 @@ public class NewsData extends APIData {
         return !(snippet.equals(""));
     }
 
-    @Override
-    public void setToParse() {
-        toParse = title;
-    }
 }

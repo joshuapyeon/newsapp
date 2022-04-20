@@ -1,8 +1,7 @@
-package com.example.wntprototype.APIWrappers.GoogleAPIs;
+package com.example.wntprototype.APIWrappers.APIs;
 
 import android.os.AsyncTask;
 
-import com.example.wntprototype.APIWrappers.APIData;
 import com.example.wntprototype.APIWrappers.APISearch;
 import com.example.wntprototype.APIWrappers.TrendingContent;
 
@@ -48,6 +47,7 @@ public class GTSWrapper extends AsyncTask<APISearch, Void, List<TrendingContent>
      */
     private List<TrendingContent> buildDataList(String text) {
         List<TrendingContent> toReturn = new ArrayList<TrendingContent>();
+        if(text.equals("")) return toReturn;
         try {
             JSONObject data = new JSONObject(text);
             JSONArray results = data.optJSONArray("results");
@@ -82,6 +82,7 @@ public class GTSWrapper extends AsyncTask<APISearch, Void, List<TrendingContent>
                 .build();
         try {
             Response response = client.newCall(request).execute();
+            if(response.code() != 200) return "";
             return response.body().string();
         } catch (Exception e) {
             e.printStackTrace();

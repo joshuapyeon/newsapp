@@ -1,4 +1,4 @@
-package com.example.wntprototype.APIWrappers.GoogleAPIs;
+package com.example.wntprototype.APIWrappers.APIs;
 
 import android.os.AsyncTask;
 
@@ -33,6 +33,7 @@ public class TrendingWrapper extends AsyncTask<APISearch, Void, List<TrendingCon
         ArrayList<TrendingContent> toReturn = new ArrayList<TrendingContent>();
         try {
             Response response = client.newCall(request).execute();
+            if(response.code() != 200) return toReturn;
             JSONObject data = new JSONObject(response.body().string());
             JSONArray values = data.optJSONObject("storySummaries").optJSONArray("trendingStories");
             for (int i = 0; i < values.length(); i++) {
@@ -50,18 +51,15 @@ public class TrendingWrapper extends AsyncTask<APISearch, Void, List<TrendingCon
                     temp.urlToImage = imageUrl;
                     newsArticles.add(temp);
                 }
-                for (int j = 0; j < trends.length(); j++) {
-                    TrendingContent temp = new TrendingContent();
-                    temp.setArticles(newsArticles);
-                    temp.setPhrase(trends.optString(j));
-                    toReturn.add(temp);
-                }
+                TrendingContent temp = new TrendingContent();
+                temp.setSources(newsArticles);
+                temp.setPhrase(values.optJSONObject(i).optString("title"));
+                temp.setUrlToImage(imageUrl);
+                toReturn.add(temp);
             }
             for(TrendingContent temp: toReturn){
-                for(NewsData article: temp.getArticles()){
-                    if(article.title.contains(temp.getPhrase())){
-                        temp.setValue(temp.getValue() + 1);
-                    }
+                for(NewsData article: temp.getSources()){
+                    temp.setValue(temp.getSources().size());
                 }
             }
             return toReturn;
