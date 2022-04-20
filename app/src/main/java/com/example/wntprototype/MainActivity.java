@@ -34,6 +34,8 @@ import com.example.wntprototype.ui.wordmap.WordMapFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -141,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 if (sharingIntent.getType().equals("text/plain"))
                     sharingIntent.putExtra(Intent.EXTRA_TEXT, (String) s.getSharingContent());
                 else
-                    sharingIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, (Parcelable) s.getSharingContent());
+                    sharingIntent.putExtra(Intent.EXTRA_CHOSEN_COMPONENT, ((ByteArrayOutputStream) s.getSharingContent()).toByteArray());
                 sharingIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
                 startActivity(Intent.createChooser(sharingIntent, "Share using"));
             }

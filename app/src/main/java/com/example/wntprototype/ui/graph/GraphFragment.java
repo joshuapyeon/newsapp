@@ -1,6 +1,9 @@
 package com.example.wntprototype.ui.graph;
 
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.example.wntprototype.APIWrappers.TrendingContent;
@@ -26,6 +30,12 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -202,7 +212,14 @@ public class GraphFragment extends Fragment implements Shareable {
     }
 
     @Override
-    public Parcelable getSharingContent() {
-        return binding.bargraph.getChartBitmap();
+    public ByteArrayOutputStream getSharingContent() {
+        ByteArrayOutputStream s = new ByteArrayOutputStream();
+        binding.bargraph.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, s);
+        try {
+            s.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return s;
     }
 }

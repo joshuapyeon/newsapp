@@ -2,7 +2,9 @@ package com.example.wntprototype.ui.wordmap;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.example.wntprototype.APIWrappers.TrendingContent;
@@ -20,8 +23,11 @@ import com.example.wntprototype.R;
 import com.example.wntprototype.databinding.FragmentWordMapBinding;
 import com.example.wntprototype.ui.Shareable;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.List;
 
@@ -72,7 +78,14 @@ public class WordMapFragment extends Fragment implements Shareable {
     }
 
     @Override
-    public Parcelable getSharingContent() {
-        return word_map_img;
+    public ByteArrayOutputStream getSharingContent() {
+        ByteArrayOutputStream s = new ByteArrayOutputStream();
+        word_map_img.compress(Bitmap.CompressFormat.PNG, 100, s);
+        try {
+            s.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return s;
     }
 }
