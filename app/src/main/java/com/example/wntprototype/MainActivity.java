@@ -83,6 +83,11 @@ public class MainActivity extends AppCompatActivity {
      */
     private ActivityMainBinding binding;
 
+
+    /**
+     * Creates the user starting user interface
+     * @param savedInstanceState The saved state of the application
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -217,6 +222,9 @@ public class MainActivity extends AppCompatActivity {
      * @return The Fragment of the current visualization
      */
     private Fragment getCurrVisualization() {
+        /**
+         * The current display.
+         */
         Fragment dest;
         switch (currVisualization) {
             case 0:
@@ -237,16 +245,38 @@ public class MainActivity extends AppCompatActivity {
      * This class is responsible for the real time accessibility of different buttons
      */
     private class onTextEdit implements TextWatcher {
+        /**
+         * Determines if the word is an acceptable keyword
+         */
         private final boolean isKeyword;
 
+        /**
+         * Constructor.
+         * @param isKeyword Determines if the user-entered keyword is acceptable or not.
+         */
         public onTextEdit(boolean isKeyword) {
             this.isKeyword = isKeyword;
         }
 
+
+        /**
+         * Action before the keyword is changed. Not used.
+         * @param charSequence The user-entered keyword
+         * @param i UNIMPORTANT VARIABLE: USED ONLY BETWEEN ANOTHER OBJECT NOT IN OUR CONTROL
+         * @param i1 UNIMPORTANT VARIABLE: USED ONLY BETWEEN ANOTHER OBJECT NOT IN OUR CONTROL
+         * @param i2 UNIMPORTANT VARIABLE: USED ONLY BETWEEN ANOTHER OBJECT NOT IN OUR CONTROL
+         */
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
 
+        /**
+         * Changes the current keyword to the keyword that the user has entered.
+         * @param charSequence The keyword that the user entered.
+         * @param i UNIMPORTANT VARIABLE: USED ONLY BETWEEN ANOTHER OBJECT NOT IN OUR CONTROL
+         * @param i1 UNIMPORTANT VARIABLE: USED ONLY BETWEEN ANOTHER OBJECT NOT IN OUR CONTROL
+         * @param i2 UNIMPORTANT VARIABLE: USED ONLY BETWEEN ANOTHER OBJECT NOT IN OUR CONTROL
+         */
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             if (isKeyword) {
@@ -256,6 +286,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        /**
+         * Takes the current keyword and runs it through the current data source being used.
+         * @param editable Mutable object to attach information to. NOT USED
+         */
         @Override
         public void afterTextChanged(Editable editable) {
             if (currentDataSource != null && currentDataSource.hasKeyword()) {

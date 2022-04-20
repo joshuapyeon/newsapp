@@ -1,12 +1,9 @@
 package com.example.wntprototype.ui.list;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +46,7 @@ public class ListFragment extends Fragment implements Shareable {
         for(int i = 0; i < NDList.size(); i++) {
             newsDataList.add(NDList.get(i));
         }
+        Log.d("Size of newsDataList",newsDataList.size()+"");
     }
     @Nullable
     @Override
@@ -62,15 +60,17 @@ public class ListFragment extends Fragment implements Shareable {
 
             for (TrendingContent api : searchList) {
                 apiToStringList.add(api.getPhrase());
-                getNewsData(api.getArticles());
+                getNewsData(api.getSources());
             }
             newsAdapter = new NewsAdapter(root.getContext(), R.layout.list_row, newsDataList);
+            //TODO: Might have to do some strategy pattern shenanigans due to problems with different APIWrappers.
+            arrayAdapter = new ArrayAdapter<>(root.getContext(), android.R.layout.simple_list_item_1, apiToStringList);
             listFormat.setAdapter(newsAdapter);
             listFormat.setOnItemClickListener((adapterView, view, i , l) -> {
                 Snackbar sb = Snackbar.make(root, newsDataList.get(i).title, Snackbar.LENGTH_SHORT);
                 sb.setAction("OPEN ARTICLE", view1 -> {
-                    if(searchList.get(i).getArticles() != null && searchList.get(i).getArticles().get(0).hasUrl()) {
-                        String URL = searchList.get(i).getArticles().get(0).url;
+                    if(searchList.get(i).getSources() != null && searchList.get(i).getSources().get(0).hasUrl()) {
+                        String URL = searchList.get(i).getSources().get(0).url;
                         Log.d("URL being parsed", URL);
                         Intent openBrowser = new Intent();
                         openBrowser.setAction(Intent.ACTION_VIEW);

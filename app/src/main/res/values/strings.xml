@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WNTPrototype</string>
+    <string name="app_name">Trending Tracker</string>
     <string name="button_search">Search</string>
 
     <string name="generate_word_map_button">Generate Word Map</string>

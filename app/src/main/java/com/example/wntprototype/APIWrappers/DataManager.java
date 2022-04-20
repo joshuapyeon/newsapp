@@ -28,6 +28,11 @@ public class DataManager {
         } catch (Exception e){
             e.printStackTrace();
         }
+        if(search.getSource().hasKeyword()){
+            cache.setKeywordSearched(search.getQuery());
+        }else{
+            cache.setKeywordSearched("");
+        }
         cache.setData(data);
     }
 

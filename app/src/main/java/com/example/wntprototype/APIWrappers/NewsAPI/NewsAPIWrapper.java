@@ -2,8 +2,8 @@ package com.example.wntprototype.APIWrappers.NewsAPI;
 
 import android.os.AsyncTask;
 
-import com.example.wntprototype.APIWrappers.APIData;
 import com.example.wntprototype.APIWrappers.APISearch;
+import com.example.wntprototype.APIWrappers.TrendingContent;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,7 +23,7 @@ import java.util.List;
  *
  * This class gets data from NewsAPI and puts it into a helpful data structure.
  */
-public class NewsAPIWrapper extends AsyncTask<APISearch, Void, List<APIData>> {
+public class NewsAPIWrapper extends AsyncTask<APISearch, Void, List<TrendingContent>> {
 
     /**
      * The API Key.
@@ -35,7 +35,7 @@ public class NewsAPIWrapper extends AsyncTask<APISearch, Void, List<APIData>> {
     /**
      * This method gets the API Data and formats it correctly and sends it back to the main thread.
      */
-    protected List<APIData> doInBackground(APISearch... apiSearches) {
+    protected List<TrendingContent> doInBackground(APISearch... apiSearches) {
         URL url = null;
         HttpURLConnection urlConnection = null;
         try{
@@ -58,11 +58,11 @@ public class NewsAPIWrapper extends AsyncTask<APISearch, Void, List<APIData>> {
      * @param response The String of the JSON file retrieved from the API data pull
      * @return A list of APIData with news information
      */
-    private ArrayList<APIData> buildArticleList(String response) {
+    private ArrayList<TrendingContent> buildArticleList(String response) {
         JSONObject temp = null;
         try{
             temp = new JSONObject(response);
-            ArrayList<APIData> toReturn = new ArrayList<APIData>();
+            ArrayList<TrendingContent> toReturn = new ArrayList<TrendingContent>();
             JSONArray articles = temp.optJSONArray("articles");
             for(int i = 0; i < articles.length(); i++){
                 JSONObject article = articles.optJSONObject(i);
@@ -75,8 +75,6 @@ public class NewsAPIWrapper extends AsyncTask<APISearch, Void, List<APIData>> {
                 ad.urlToImage = article.optString("urlToImage");
                 ad.publishDate = article.optString("publishedAt");
                 ad.content = article.optString("content");
-                ad.setToParse();
-                toReturn.add(ad);
             }
             return toReturn;
         }catch(Exception e){

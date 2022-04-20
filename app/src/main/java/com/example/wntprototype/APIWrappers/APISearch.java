@@ -9,19 +9,14 @@ import com.example.wntprototype.APIWrappers.NewsAPI.Country;
 public class APISearch {
 
     /**
-     * The query for the data pull to search
-     */
-    private boolean containsQuery = false;
-
-    /**
      * the Query
      */
-    private String query;
+    private String query = "";
 
     /**
      * The Data source
      */
-    private DataSource source;
+    private DataSource source = null;
 
     /**
      * returns the source
@@ -37,13 +32,12 @@ public class APISearch {
      */
     public void setSource(DataSource source) {
         this.source = source;
-        this.hasSource = true;
     }
 
     /**
      * Says if the search has a data source
      */
-    private boolean hasSource = false;
+    private boolean hasSource = (source != null);
 
     /**
      *  This returns the query.
@@ -58,18 +52,7 @@ public class APISearch {
      * @param s The String to set the query.
      */
     public void setQuery(String s){
-        if(!s.equals("")) {
-            containsQuery = true;
-            query = s;
-        }
-    }
-
-    /**
-     * Clears the Query.
-     */
-    public void clearQuery(){
-        query = "";
-        containsQuery = false;
+        query = s;
     }
 
     /**
@@ -77,7 +60,7 @@ public class APISearch {
      * @return A boolean value saying if the search has a query
      */
     public boolean hasQuery(){
-        return containsQuery;
+        return !query.equals("");
     }
 
 }

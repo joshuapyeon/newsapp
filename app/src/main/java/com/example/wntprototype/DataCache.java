@@ -17,6 +17,23 @@ public class DataCache {
     private List<TrendingContent> data = null;
 
     /**
+     * Holds the last keyword that was searched
+     */
+    private String keywordSearched = "";
+
+    public String getKeywordSearched() {
+        return keywordSearched;
+    }
+
+    public void setKeywordSearched(String keywordSearched) {
+        this.keywordSearched = keywordSearched;
+    }
+
+    public boolean hasKeyword(){
+        return !keywordSearched.equals("");
+    }
+
+    /**
      * Private constructor
      */
     private DataCache() {
