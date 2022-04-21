@@ -1,6 +1,7 @@
 package com.example.wntprototype;
 
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -11,6 +12,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -136,16 +138,17 @@ public class MainActivity extends AppCompatActivity {
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 Shareable s = (Shareable)currVisualizationFrag;
 
-                // This will be the type of content; maybe PNG/JPEG image?
+                // This will be a string for ListView, PNG image for others.
                 sharingIntent.setType(s.getSharingType());
 
                 // Body of the content; maybe different types later
                 String shareSubject = currentKeyword + " " + visualizations[currVisualization];
-                //Need to use a ContentProvider... why... why... why...
                 if (sharingIntent.getType().equals("text/plain"))
                     sharingIntent.putExtra(Intent.EXTRA_TEXT, (String) s.getSharingContent());
-                else
-                    sharingIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(((File) s.getSharingContent())));
+                else {
+                    Uri uri = FileProvider.getUriForFile(this, "com.example.fileprovider", ((File) s.getSharingContent()));
+                    sharingIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                }
                 sharingIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
                 startActivity(Intent.createChooser(sharingIntent, "Share using"));
             }

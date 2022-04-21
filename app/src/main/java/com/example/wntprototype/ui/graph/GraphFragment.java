@@ -202,19 +202,23 @@ public class GraphFragment extends Fragment implements Shareable {
 
     @Override
     public File getSharingContent() {
-        File file = new File(this.requireContext().getFilesDir().getPath() + "/share.png");
         try {
-            PrintStream s = new PrintStream(file);
+            File parentDirectory = new File(this.requireContext().getFilesDir().getPath() + "/share");
+            if (!parentDirectory.mkdir())
+                System.out.println("Parent directory exists, skipping creation");
+            File file = new File(parentDirectory, "/image.png");
             if (!file.createNewFile())
                 System.out.println("File exists, skipping creation");
+            PrintStream s = new PrintStream(file);
             if (file.setWritable(true)) {
                 binding.bargraph.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, s);
             } else
                 throw new IOException("Failed to write to input file :(");
             s.close();
+            return file;
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-        return file;
     }
 }
