@@ -66,9 +66,12 @@ public class MainActivity extends AppCompatActivity {
     private String currentKeyword = "";
 
     /**
-     * The current fragment value that we are seeing
+     * The variable that identifies the fragment we want
      */
     private int currVisualization = 0;
+    /**
+     * The current fragment that we are seeing
+     */
     private Fragment currVisualizationFrag = new ListFragment();
 
     /**
@@ -285,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /**
-         * Takes the current keyword and runs it through the current data source being used.
+         * Takes the current keyword and sets the permissions for the search button
          * @param editable Mutable object to attach information to. NOT USED
          */
         @Override
