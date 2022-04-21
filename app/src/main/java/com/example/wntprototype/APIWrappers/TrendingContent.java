@@ -2,38 +2,62 @@ package com.example.wntprototype.APIWrappers;
 
 import java.util.List;
 
+/**
+ * A unit of Trending Content
+ */
 public class TrendingContent {
 
     /**
      * A list of associated articles
      */
-    private List<NewsData> articles;
+    private List<NewsData> sources;
 
     /**
      * The trending phrase
      */
-    private String phrase;
+    private String phrase = "";
+
+    /**
+     * The url to the image of this trending content
+     */
+    private String urlToImage = "";
 
     /**
      * The quantity of times this word appeared in the data.
      * Note: This is mostly an arbitrary value to show relativity
      */
-    private int value;
+    private int value = 0;
+
+    /**
+     * gets the image url
+     * @return the image url
+     */
+    public String getUrlToImage() {
+        return urlToImage;
+    }
+
+    /**
+     * sets the image url
+     * @param urlToImage the image url
+     */
+    public void setUrlToImage(String urlToImage) {
+        this.urlToImage = urlToImage;
+    }
 
     /**
      * Gives access to the article list
      * @return The articles
      */
-    public List<NewsData> getArticles() {
-        return articles;
+    public List<NewsData> getSources() {
+        return sources;
     }
 
     /**
      * sets the Articles
-     * @param articles the articles related to the phrase
+     * @param sources the articles related to the phrase
      */
-    public void setArticles(List<NewsData> articles) {
-        this.articles = articles;
+    public void setSources(List<NewsData> sources) {
+        this.sources = sources;
     }
 
     /**
@@ -41,7 +65,7 @@ public class TrendingContent {
      * @return if this has articles
      */
     public boolean hasArticles(){
-        return articles != null && articles.size() > 0;
+        return sources != null && sources.size() > 0;
     }
 
     /**

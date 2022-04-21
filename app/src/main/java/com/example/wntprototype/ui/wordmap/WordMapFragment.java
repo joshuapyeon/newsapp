@@ -3,7 +3,6 @@ package com.example.wntprototype.ui.wordmap;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +71,24 @@ public class WordMapFragment extends Fragment implements Shareable {
     }
 
     @Override
-    public Parcelable getSharingContent() {
-        return word_map_img;
+    public File getSharingContent() {
+        try {
+            File parentDirectory = new File(this.requireContext().getFilesDir().getPath() + "/share");
+            if (!parentDirectory.mkdir())
+                System.out.println("Parent directory exists, skipping creation");
+            File file = new File(parentDirectory, "/image.png");
+            if (!file.createNewFile())
+                System.out.println("File exists, skipping creation");
+            PrintStream s = new PrintStream(file);
+            if (file.setWritable(true)) {
+                word_map_img.compress(Bitmap.CompressFormat.PNG, 100, s);
+            } else
+                throw new IOException("Failed to write to input file :(");
+            s.close();
+            return file;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

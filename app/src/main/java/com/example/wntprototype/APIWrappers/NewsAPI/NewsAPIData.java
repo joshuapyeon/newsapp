@@ -1,8 +1,7 @@
 package com.example.wntprototype.APIWrappers.NewsAPI;
 
-import com.example.wntprototype.APIWrappers.APIData;
 
-public class NewsAPIData extends APIData {
+public class NewsAPIData {
     public String sourceName;
     public String author;
     public String title;
@@ -11,9 +10,4 @@ public class NewsAPIData extends APIData {
     public String publishDate;
     public String description;
     public String content;
-
-    @Override
-    public void setToParse() {
-        toParse = title;
-    }
 }

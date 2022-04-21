@@ -1,7 +1,7 @@
 package com.example.wntprototype.ui.graph;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +26,9 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +49,7 @@ public class GraphFragment extends Fragment implements Shareable {
      * A list that stores all of the phrases
      * associated with each result of the search
      */
-    ArrayList<String> words = new ArrayList<String>();
+    ArrayList<String> words = new ArrayList<>();
 
     /**
      * The bar chart to be displayed
@@ -62,7 +65,7 @@ public class GraphFragment extends Fragment implements Shareable {
      * A list that stores all of the values
      * associated with each result of the search.
      */
-    ArrayList<Integer> values = new ArrayList<Integer>();
+    ArrayList<Integer> values = new ArrayList<>();
     /**
      * The maximum value for the range
      * of the x-axis
@@ -80,9 +83,9 @@ public class GraphFragment extends Fragment implements Shareable {
      * Method that builds the graph view based
      * on the user's search.
      *
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
+     * @param inflater unused
+     * @param container unused
+     * @param savedInstanceState unused
      * @return The Graph view
      */
 
@@ -116,7 +119,7 @@ public class GraphFragment extends Fragment implements Shareable {
         //sets the x-axis labels for each of the bars in the bar chart
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
-            /**
+            /*
              * Formats each x-axis bar label
              * only labeling by one word from each
              * phrase, if more than one
@@ -181,19 +184,15 @@ public class GraphFragment extends Fragment implements Shareable {
         //creates bar entries (x and y value to create a bar)
         //x values are indicated by which bar this is (0th, 1st, second, etc.)
         for (int i = 0; i < XMAX; i++) {
-            int phraseNum = i;
             int thisNum = values.get(i);
             // System.out.println(thisNum);
-            mappings.add(new BarEntry(phraseNum, thisNum)); //add this bar entry to the array list of bar entries
+            mappings.add(new BarEntry(i, thisNum)); //add this bar entry to the array list of bar entries
         }
         BarDataSet set = new BarDataSet(mappings, graphLabel); //contains the set of all the bar entries
         set.setColors(ColorTemplate.JOYFUL_COLORS);
         ArrayList<IBarDataSet> myDataSets = new ArrayList<>(); //can contain bar entry sets, including more than one
         myDataSets.add(set); //add the bar entry set to list of BarDataSets
-        BarData currentData = new BarData(myDataSets); //set the bar dtat to what is stored in myDataSets
-        return currentData;
-
-
+        return new BarData(myDataSets);
     }
 
     @Override
@@ -202,7 +201,24 @@ public class GraphFragment extends Fragment implements Shareable {
     }
 
     @Override
-    public Parcelable getSharingContent() {
-        return binding.bargraph.getChartBitmap();
+    public File getSharingContent() {
+        try {
+            File parentDirectory = new File(this.requireContext().getFilesDir().getPath() + "/share");
+            if (!parentDirectory.mkdir())
+                System.out.println("Parent directory exists, skipping creation");
+            File file = new File(parentDirectory, "/image.png");
+            if (!file.createNewFile())
+                System.out.println("File exists, skipping creation");
+            PrintStream s = new PrintStream(file);
+            if (file.setWritable(true)) {
+                binding.bargraph.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, s);
+            } else
+                throw new IOException("Failed to write to input file :(");
+            s.close();
+            return file;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
