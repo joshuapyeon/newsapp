@@ -74,7 +74,6 @@ public class WordMapFragment extends Fragment implements Shareable {
     public File getSharingContent() {
         try {
             File parentDirectory = new File(this.requireContext().getFilesDir().getPath() + "/share");
-            parentDirectory.delete();
             if (!parentDirectory.mkdir())
                 System.out.println("Parent directory exists, skipping creation");
             File file = new File(parentDirectory, "/image.png");
