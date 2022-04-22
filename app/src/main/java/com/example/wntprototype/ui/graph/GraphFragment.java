@@ -1,10 +1,12 @@
 package com.example.wntprototype.ui.graph;
 
+import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,8 +24,11 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.io.File;
@@ -73,6 +78,8 @@ public class GraphFragment extends Fragment implements Shareable {
 
     private int XMAX = 5;
 
+    private final String[] noWords = {"I", "The", "As", "For", "St.", "My", "A", "Your", "Yours", "That", "That's", "Why", "What", "With"};
+
     /**
      * Creates the binding for the
      * graph fragment
@@ -80,14 +87,25 @@ public class GraphFragment extends Fragment implements Shareable {
     private FragmentGraphBinding binding;
 
     /**
+     * Dialag Box to display phrases when a bar
+     * on the bar chart is clicked.
+     */
+    AlertDialog alertDialog;
+
+    public GraphFragment() {
+
+    }
+
+    /**
      * Method that builds the graph view based
      * on the user's search.
      *
-     * @param inflater unused
-     * @param container unused
+     * @param inflater           unused
+     * @param container          unused
      * @param savedInstanceState unused
      * @return The Graph view
      */
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -102,12 +120,12 @@ public class GraphFragment extends Fragment implements Shareable {
             setData(); //create the data that is to be displayed by operating on the results from the search
             setAppearance(); //sets the structure of the graph itself (x and y axis, etc.)
             BarData barData = makeBarData();
+            makeListener();
             barData.setValueTextSize(16f);
             barChart.setData(barData);
         }
         return root;
     }
-
     /**
      * Sets up the structure of the graph
      * including the x-axis, as well as the y-axis.
@@ -194,6 +212,32 @@ public class GraphFragment extends Fragment implements Shareable {
         myDataSets.add(set); //add the bar entry set to list of BarDataSets
         return new BarData(myDataSets);
     }
+
+    private void makeListener() {
+        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                //get the index of the selected bar
+                int barClicked = barChart.getBarData().getDataSetForEntry(e).getEntryIndex((BarEntry) e);
+                String phrase = words.get(barClicked);
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                builder.setCancelable(true);
+                View thisView = LayoutInflater.from(requireContext()).inflate(R.layout.popup_graphview, null);
+                TextView thisPhrase = thisView.findViewById(R.id.phrase);
+                thisPhrase.setText(phrase);
+                builder.setView(thisView);
+                alertDialog = builder.create();
+                alertDialog = builder.show();
+
+
+            }
+
+            public void onNothingSelected() {
+
+            }
+        });
+    }
+
 
     @Override
     public String getSharingType() {
