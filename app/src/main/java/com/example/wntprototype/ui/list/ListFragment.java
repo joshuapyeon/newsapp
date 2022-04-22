@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ExpandableListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,7 +33,7 @@ public class ListFragment extends Fragment implements Shareable {
     List<String> apiToStringList = new ArrayList<>();
     ArrayList<NewsData> newsDataList = new ArrayList<NewsData>();
     private FragmentListBinding binding;
-    ListView listFormat;
+    ExpandableListView listFormat;
     ArrayAdapter<String> arrayAdapter;
     NewsAdapter newsAdapter;
 
@@ -53,7 +54,7 @@ public class ListFragment extends Fragment implements Shareable {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        listFormat = root.findViewById(R.id.listView);
+        listFormat = root.findViewById(R.id.keywordView);
         if (cache.hasData()) {
             searchList = DataCache.getCache().getData();
 
