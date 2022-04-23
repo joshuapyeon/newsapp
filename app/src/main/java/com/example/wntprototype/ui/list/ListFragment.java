@@ -25,30 +25,20 @@ import com.example.wntprototype.ui.Shareable;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ListFragment extends Fragment implements Shareable {
     DataCache cache = DataCache.getCache();
     List<TrendingContent> searchList;
-    List<String> apiToStringList = new ArrayList<>();
-    ArrayList<NewsData> newsDataList = new ArrayList<NewsData>();
+    List<String> titleList = new ArrayList<>();
     private FragmentListBinding binding;
     ExpandableListView listFormat;
-    ArrayAdapter<String> arrayAdapter;
-    NewsAdapter newsAdapter;
+    ArrayAdapter<String> phraseAdapter;
+    HashMap<String, List<NewsData>> articleMap = new HashMap<String, List<NewsData>>();
+    ListViewAdapter newsAdapter;
 
-    /**
-     * Helper method. Retrieves all available NewsData objects from a TrendingContent object
-     * PRECONDITION: There is at least 1 NewsData objects in NDList
-     * @param NDList The list of NewsData objects in a TrendingContent object
-     */
-    public void getNewsData(List<NewsData> NDList) {
-        if(NDList == null) return;
-        for(int i = 0; i < NDList.size(); i++) {
-            newsDataList.add(NDList.get(i));
-        }
-        Log.d("Size of newsDataList",newsDataList.size()+"");
-    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,36 +48,13 @@ public class ListFragment extends Fragment implements Shareable {
         if (cache.hasData()) {
             searchList = DataCache.getCache().getData();
 
-
+            //Get the title word/phrase and put it and it's associated articles in a map.
             for (TrendingContent api : searchList) {
-                apiToStringList.add(api.getPhrase());
-                getNewsData(api.getSources());
+                titleList.add(api.getPhrase());
+                articleMap.put(api.getPhrase(), api.getSources());
             }
-            newsAdapter = new NewsAdapter(root.getContext(), R.layout.list_row, newsDataList);
-            //TODO: Might have to do some strategy pattern shenanigans due to problems with different APIWrappers.
-            arrayAdapter = new ArrayAdapter<>(root.getContext(), android.R.layout.simple_list_item_1, apiToStringList);
+            newsAdapter = new ListViewAdapter(titleList, articleMap, R.layout.list_row);
             listFormat.setAdapter(newsAdapter);
-            listFormat.setOnItemClickListener((adapterView, view, i , l) -> {
-                Snackbar sb = Snackbar.make(root, newsDataList.get(i).title, Snackbar.LENGTH_SHORT);
-                sb.setAction("OPEN ARTICLE", view1 -> {
-                    if(searchList.get(i).getSources() != null && searchList.get(i).getSources().get(0).hasUrl()) {
-                        String URL = searchList.get(i).getSources().get(0).url;
-                        Log.d("URL being parsed", URL);
-                        Intent openBrowser = new Intent();
-                        openBrowser.setAction(Intent.ACTION_VIEW);
-                        openBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
-                        openBrowser.setData(Uri.parse(URL));
-                        startActivity(openBrowser);
-                    }
-                    else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(root.getContext());
-                        builder.setMessage("URL Unavailable");
-                        AlertDialog urlLink = builder.create();
-                        urlLink.show();
-                    }
-                });
-                sb.show();
-            });
         }
 
         return root;
@@ -107,8 +74,8 @@ public class ListFragment extends Fragment implements Shareable {
     @Override
     public Object getSharingContent() {
         String list = "";
-        for (int i = 0; i < apiToStringList.size(); i++)
-            list = list.concat(apiToStringList.get(i) + "\n");
+        for (int i = 0; i < titleList.size(); i++)
+            list = list.concat(titleList.get(i) + "\n");
         return list;
     }
 }
