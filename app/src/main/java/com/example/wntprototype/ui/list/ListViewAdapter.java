@@ -4,6 +4,7 @@ import java.util.*;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,7 +91,7 @@ public class ListViewAdapter extends BaseExpandableListAdapter {
 
         TextView keyphrase = view.findViewById(android.R.id.text1);
 
-        String title = String.valueOf(i);
+        String title = titleList.get(i);
 
         keyphrase.setText(title);
 
@@ -113,11 +114,14 @@ public class ListViewAdapter extends BaseExpandableListAdapter {
         articleSpace.setText(articleTitle);
 
         String articleImage = selectedArticle.urlToImage;
+        Drawable image = urlToDrawable(selectedArticle);
+        imageView.setImageDrawable(image);
 
         articleSpace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar sb = Snackbar.make(view, selectedArticle.title, Snackbar.LENGTH_SHORT);
+                sb.show();
             }
         });
 
@@ -127,5 +131,19 @@ public class ListViewAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int i, int i1) {
         return false;
+    }
+
+    /**
+     * Helper method. Supposed to turn an imageURL String to a Drawable. DOES NOT WORK
+     * @param news The NewsData item containing the imageURL
+     * @return A Drawable of the imageURL
+     */
+    private Drawable urlToDrawable(NewsData news) {
+        if(news.hasUrlToImage()) {
+            String image = news.urlToImage;
+            Drawable d = Drawable.createFromPath(image);
+            return d;
+        }
+        return null;
     }
 }
