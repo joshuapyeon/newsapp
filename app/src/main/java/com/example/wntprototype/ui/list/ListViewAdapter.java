@@ -124,10 +124,10 @@ public class ListViewAdapter extends BaseExpandableListAdapter implements Sharea
         NewsData selectedArticle = articleMap.get(titleList.get(i)).get(i1);
         String articleTitle = selectedArticle.title;
         articleSpace.setText(articleTitle);
-
-        String articleImage = selectedArticle.urlToImage;
-        Log.d("IMAGEURL: ", articleImage);
-        Glide.with(view).load(articleImage).into(imageView);
+        if(selectedArticle.hasUrlToImage()) {
+            String articleImage = selectedArticle.urlToImage;
+            Glide.with(view).load(articleImage).into(imageView);
+        }
         articleSpace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
