@@ -44,7 +44,7 @@ public class TrendingWrapper extends AsyncTask<APISearch, Void, List<TrendingCon
                 for(int j = 0; j < articles.length(); j++){
                     JSONObject article = articles.optJSONObject(j);
                     NewsData temp = new NewsData();
-                    temp.title = article.optString("articleTitle");
+                    temp.title = fixTitle(article.optString("articleTitle"));
                     temp.source = article.optString("source");
                     temp.url = article.optString("url");
                     temp.snippet = article.optString("snippet");
@@ -67,5 +67,21 @@ public class TrendingWrapper extends AsyncTask<APISearch, Void, List<TrendingCon
             e.printStackTrace();
         }
         return null;
+    }
+    private String fixTitle(String s){
+        String toReturn = s;
+        toReturn = toReturn.replaceAll("&#39;", "'");
+        toReturn = toReturn.replaceAll("&aacute;", "a");
+        toReturn = toReturn.replaceAll("&eacute;", "e");
+        toReturn = toReturn.replaceAll("&iacute;", "i");
+        toReturn = toReturn.replaceAll("&oacute;", "o");
+        toReturn = toReturn.replaceAll("&uacute;", "u");
+        toReturn = toReturn.replaceAll("&reg;", "");
+        toReturn = toReturn.replaceAll("&Aacute;", "A");
+        toReturn = toReturn.replaceAll("&Eacute;", "E");
+        toReturn = toReturn.replaceAll("&Iacute;", "I");
+        toReturn = toReturn.replaceAll("&Oacute;", "O");
+        toReturn = toReturn.replaceAll("&Uacute;", "U");
+        return toReturn;
     }
 }

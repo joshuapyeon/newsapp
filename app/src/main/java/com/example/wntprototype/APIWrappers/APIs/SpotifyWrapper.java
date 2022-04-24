@@ -36,9 +36,10 @@ public class SpotifyWrapper extends AsyncTask<APISearch, Void, List<TrendingCont
                 TrendingContent temp = new TrendingContent();
                 JSONObject song = content.optJSONObject(i);
                 temp.setUrlToImage(song.optString("thumbnail"));
-                temp.setPhrase(song.optString("track_title"));
+                temp.setPhrase(fixTitle(song.optString("track_title")));
                 temp.setValue(content.length()-i);
                 NewsData news = new NewsData();
+                news.title = temp.getPhrase();
                 news.url = song.optString("track_url");
                 JSONArray artists = song.optJSONArray("artists");
                 List<NewsData> newsArticles = new ArrayList<>();
@@ -52,6 +53,23 @@ public class SpotifyWrapper extends AsyncTask<APISearch, Void, List<TrendingCont
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return toReturn;
+    }
+
+    private String fixTitle(String s){
+        String toReturn = s;
+        toReturn = toReturn.replaceAll("&#039;", "'");
+        toReturn = toReturn.replaceAll("&aacute;", "a");
+        toReturn = toReturn.replaceAll("&eacute;", "e");
+        toReturn = toReturn.replaceAll("&iacute;", "i");
+        toReturn = toReturn.replaceAll("&oacute;", "o");
+        toReturn = toReturn.replaceAll("&uacute;", "u");
+        toReturn = toReturn.replaceAll("&reg;", "");
+        toReturn = toReturn.replaceAll("&Aacute;", "A");
+        toReturn = toReturn.replaceAll("&Eacute;", "E");
+        toReturn = toReturn.replaceAll("&Iacute;", "I");
+        toReturn = toReturn.replaceAll("&Oacute;", "O");
+        toReturn = toReturn.replaceAll("&Uacute;", "U");
         return toReturn;
     }
 }
