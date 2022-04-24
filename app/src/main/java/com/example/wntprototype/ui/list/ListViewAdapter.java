@@ -1,10 +1,17 @@
 package com.example.wntprototype.ui.list;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import java.net.URL;
+import android.net.Uri;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +23,12 @@ import com.example.wntprototype.R;
 
 
 import com.example.wntprototype.APIWrappers.NewsData;
+import com.example.wntprototype.ui.Shareable;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.HashMap;
 
-public class ListViewAdapter extends BaseExpandableListAdapter {
+public class ListViewAdapter extends BaseExpandableListAdapter implements Shareable {
     List<String> titleList;
     HashMap<String, List<NewsData>> articleMap;
     int articleLayout;
@@ -121,6 +129,22 @@ public class ListViewAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 Snackbar sb = Snackbar.make(view, selectedArticle.title, Snackbar.LENGTH_SHORT);
+                sb.setAction("OPEN LINK", view1 -> {
+                    if(selectedArticle.hasUrl()) {
+                        String URL = selectedArticle.url;
+                        Intent openBrowser = new Intent();
+                        openBrowser.setAction(Intent.ACTION_VIEW);
+                        openBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
+                        openBrowser.setData(Uri.parse(URL));
+                        viewGroup.getContext().startActivity(openBrowser);
+                    }
+                    else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(viewGroup.getContext());
+                        builder.setMessage("URL Unavailable");
+                        AlertDialog urlLink = builder.create();
+                        urlLink.show();
+                    }
+                });
                 sb.show();
             }
         });
@@ -141,9 +165,27 @@ public class ListViewAdapter extends BaseExpandableListAdapter {
     private Drawable urlToDrawable(NewsData news) {
         if(news.hasUrlToImage()) {
             String image = news.urlToImage;
-            Drawable d = Drawable.createFromPath(image);
-            return d;
+            try {
+                InputStream is = (InputStream) new URL(image).getContent();
+                Drawable d = Drawable.createFromStream(is, "some source");
+                return d;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return null;
+    }
+
+    @Override
+    public String getSharingType() {
+        return "text/plain";
+    }
+
+    @Override
+    public Object getSharingContent() {
+        String list = "";
+        for (int i = 0; i < titleList.size(); i++)
+            list = list.concat(titleList.get(i) + "\n");
+        return list;
     }
 }

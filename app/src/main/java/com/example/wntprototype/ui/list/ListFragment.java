@@ -51,7 +51,12 @@ public class ListFragment extends Fragment implements Shareable {
             //Get the title word/phrase and put it and it's associated articles in a map.
             for (TrendingContent api : searchList) {
                 titleList.add(api.getPhrase());
-                articleMap.put(api.getPhrase(), api.getSources());
+                if(api.getSources() != null)
+                    articleMap.put(api.getPhrase(), api.getSources());
+                else
+                    articleMap.put(api.getPhrase(), new ArrayList<NewsData>() {
+                    });
+
             }
             newsAdapter = new ListViewAdapter(titleList, articleMap, R.layout.list_row);
             listFormat.setAdapter(newsAdapter);
