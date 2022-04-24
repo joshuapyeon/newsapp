@@ -39,14 +39,15 @@ public class YoutubeWrapper extends AsyncTask<APISearch, Void, List<TrendingCont
                 temp.setPhrase(video.optString("title"));
                 temp.setValue(video.optInt("views"));
                 JSONArray thumbnails = video.optJSONArray("thumbnails");
-                if(thumbnails.length() > 0) {
-                    temp.setUrlToImage(thumbnails.optJSONObject(thumbnails.length() - 1).optString("url"));
+                if(thumbnails.length() > 1) {
+                    temp.setUrlToImage(thumbnails.optJSONObject(1).optString("url"));
                 }
                 List<NewsData> newsList = new ArrayList<NewsData>();
                 NewsData news = new NewsData();
                 news.title = video.optString("title");
                 news.source = video.optString("channelName");
                 news.url = video.optString("videoUrl");
+                news.urlToImage = temp.getUrlToImage();
                 news.snippet = video.optString("description");
                 newsList.add(news);
 

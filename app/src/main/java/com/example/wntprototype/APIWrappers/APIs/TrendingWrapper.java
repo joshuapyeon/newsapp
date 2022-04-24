@@ -39,7 +39,7 @@ public class TrendingWrapper extends AsyncTask<APISearch, Void, List<TrendingCon
             for (int i = 0; i < values.length(); i++) {
                 JSONArray trends = values.optJSONObject(i).optJSONArray("entityNames");
                 JSONArray articles = values.optJSONObject(i).optJSONArray("articles");
-                String imageUrl = values.optJSONObject(i).optJSONObject("image").optString("imgUrl");
+                String imageUrl = "https:" + values.optJSONObject(i).optJSONObject("image").optString("imgUrl");
                 List<NewsData> newsArticles = new ArrayList<>();
                 for(int j = 0; j < articles.length(); j++){
                     JSONObject article = articles.optJSONObject(j);

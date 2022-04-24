@@ -41,6 +41,7 @@ public class SpotifyWrapper extends AsyncTask<APISearch, Void, List<TrendingCont
                 NewsData news = new NewsData();
                 news.title = temp.getPhrase();
                 news.url = song.optString("track_url");
+                news.urlToImage = temp.getUrlToImage();
                 JSONArray artists = song.optJSONArray("artists");
                 List<NewsData> newsArticles = new ArrayList<>();
                 for(int j = 0; j < artists.length(); j++){

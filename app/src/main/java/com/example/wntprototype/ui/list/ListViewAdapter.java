@@ -1,19 +1,18 @@
 package com.example.wntprototype.ui.list;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import java.net.URL;
 import android.net.Uri;
-import android.text.Layout;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.wntprototype.R;
 
 
@@ -30,6 +28,8 @@ import com.example.wntprototype.ui.Shareable;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.HashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 
 public class ListViewAdapter extends BaseExpandableListAdapter implements Shareable {
@@ -124,9 +124,29 @@ public class ListViewAdapter extends BaseExpandableListAdapter implements Sharea
         NewsData selectedArticle = articleMap.get(titleList.get(i)).get(i1);
         String articleTitle = selectedArticle.title;
         articleSpace.setText(articleTitle);
+
         if(selectedArticle.hasUrlToImage()) {
-            String articleImage = selectedArticle.urlToImage;
-            Glide.with(view).load(articleImage).into(imageView);
+            Executor executor = Executors.newSingleThreadExecutor();
+            Handler handler = new Handler(Looper.getMainLooper());
+            final Bitmap[] thumbnail = {null};
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    String imageURL = selectedArticle.urlToImage;
+                    try{
+                       InputStream in = new URL(imageURL).openStream();
+                       thumbnail[0] = BitmapFactory.decodeStream(in);
+                       handler.post(new Runnable() {
+                           @Override
+                           public void run() {
+                               imageView.setImageBitmap(thumbnail[0]);
+                           }
+                       });
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
         articleSpace.setOnClickListener(new View.OnClickListener() {
             @Override
