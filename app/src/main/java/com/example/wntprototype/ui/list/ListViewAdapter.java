@@ -13,12 +13,15 @@ import android.os.Bundle;
 import java.net.URL;
 import android.net.Uri;
 import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 import com.example.wntprototype.R;
 
 
@@ -27,6 +30,7 @@ import com.example.wntprototype.ui.Shareable;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.HashMap;
+
 
 public class ListViewAdapter extends BaseExpandableListAdapter implements Shareable {
     List<String> titleList;
@@ -122,9 +126,8 @@ public class ListViewAdapter extends BaseExpandableListAdapter implements Sharea
         articleSpace.setText(articleTitle);
 
         String articleImage = selectedArticle.urlToImage;
-        Drawable image = urlToDrawable(selectedArticle);
-        imageView.setImageDrawable(image);
-
+        Log.d("IMAGEURL: ", articleImage);
+        Glide.with(view).load(articleImage).into(imageView);
         articleSpace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,24 +160,6 @@ public class ListViewAdapter extends BaseExpandableListAdapter implements Sharea
         return false;
     }
 
-    /**
-     * Helper method. Supposed to turn an imageURL String to a Drawable. DOES NOT WORK
-     * @param news The NewsData item containing the imageURL
-     * @return A Drawable of the imageURL
-     */
-    private Drawable urlToDrawable(NewsData news) {
-        if(news.hasUrlToImage()) {
-            String image = news.urlToImage;
-            try {
-                InputStream is = (InputStream) new URL(image).getContent();
-                Drawable d = Drawable.createFromStream(is, "some source");
-                return d;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
 
     @Override
     public String getSharingType() {
