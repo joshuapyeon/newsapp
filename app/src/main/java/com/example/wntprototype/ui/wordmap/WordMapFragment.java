@@ -3,6 +3,8 @@ package com.example.wntprototype.ui.wordmap;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.wntprototype.APIWrappers.TrendingContent;
 import com.example.wntprototype.DataCache;
+import com.example.wntprototype.MainActivity;
 import com.example.wntprototype.R;
 import com.example.wntprototype.databinding.FragmentWordMapBinding;
 import com.example.wntprototype.ui.Shareable;
@@ -23,7 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
-
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class WordMapFragment extends Fragment implements Shareable {
     private static Bitmap word_map_img = null;
@@ -54,14 +58,17 @@ public class WordMapFragment extends Fragment implements Shareable {
                     throw new IOException("Failed to write to input file :(");
 
                 Toast.makeText(view.getContext(), "Generating Word map...", Toast.LENGTH_LONG).show();
-                word_map_img = WordCloudGenerator.generateWordCloud(0xFF000000, 0xFF000000, 50, 35, 2, 100, 2, BitmapFactory.decodeResource(this.requireContext().getResources(), R.drawable.mask_circle_300), null, this.requireContext().getFilesDir().getPath() + "/input.txt");
-                ((ImageView) WordMapFragment.this.requireView().findViewById(R.id.word_map_img)).setImageBitmap(word_map_img);
+                Executor executor = Executors.newSingleThreadExecutor();
+                Handler handler = new Handler(Looper.getMainLooper());
+                executor.execute(() -> {
+                    word_map_img = WordCloudGenerator.generateWordCloud(0xFF000000, 0xFF000000, 50, 35, 2, 100, 2, BitmapFactory.decodeResource(WordMapFragment.this.requireContext().getResources(), R.drawable.mask_circle_300), null, WordMapFragment.this.requireContext().getFilesDir().getPath() + "/input.txt");
+                    handler.post(() -> ((ImageView) MainActivity.currVisualizationFrag.requireView().findViewById(R.id.word_map_img)).setImageBitmap(word_map_img));
+                });
                 confirmButton.setVisibility(View.GONE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-
         return root;
     }
 

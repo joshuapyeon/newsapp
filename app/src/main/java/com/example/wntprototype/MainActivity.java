@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The current fragment that we are seeing
      */
-    private Fragment currVisualizationFrag = new ListFragment();
+    public static Fragment currVisualizationFrag = new ListFragment();
 
     /**
      * the global cache

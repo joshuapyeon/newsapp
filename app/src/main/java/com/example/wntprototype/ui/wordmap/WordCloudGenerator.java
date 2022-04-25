@@ -34,7 +34,7 @@ public class WordCloudGenerator {
     private static final String[] stopwords = { "and", "that", "there", "that's", "there's", "don't", "have", "the", "but",
             "for", "into", "out", "be", "you", "are", "they", "their", "your", "yours", "theirs", "his", "hers", "he",
             "she", "her", "him", "them", "with", "what", "after", "over", "let", "may", "it's", "its", "where", "about",
-            "had" };
+            "had", "from" };
 
     private final Bitmap outputImage;
     private final int[] maxwidthrow;
@@ -361,17 +361,6 @@ public class WordCloudGenerator {
         }
         return false;
     }
-
-    /*private void writeImage(String filename) {
-        File file = new File(filename);
-        file.setWritable(true);
-        try {
-            ImageIO.write(this.outputImage, "PNG", file);
-        } catch (IOException e) {
-            System.out.println("Failed to write file with filename " + file.getPath());
-            e.printStackTrace();
-        }
-    }*/
 
     private boolean choose_vertical() {
         return RAND.nextInt(100) < vertical_preference;
