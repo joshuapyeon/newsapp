@@ -4,4 +4,5 @@
 
     <string name="generate_word_map_button">Generate Word Map</string>
     <string name="word_map_desc">Word Map</string>
+    <string name="generating_word_map">Generating Word Map...</string>
 </resources>

@@ -29,6 +29,9 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 public class WordMapFragment extends Fragment implements Shareable {
     private static Bitmap word_map_img = null;
 
@@ -57,14 +60,20 @@ public class WordMapFragment extends Fragment implements Shareable {
                 } else
                     throw new IOException("Failed to write to input file :(");
 
-                Toast.makeText(view.getContext(), "Generating Word map...", Toast.LENGTH_LONG).show();
                 Executor executor = Executors.newSingleThreadExecutor();
                 Handler handler = new Handler(Looper.getMainLooper());
+                this.requireView().findViewById(R.id.progressBar).setVisibility(VISIBLE);
+                this.requireView().findViewById(R.id.textView).setVisibility(VISIBLE);
                 executor.execute(() -> {
                     word_map_img = WordCloudGenerator.generateWordCloud(0xFF000000, 0xFF000000, 50, 35, 2, 100, 2, BitmapFactory.decodeResource(WordMapFragment.this.requireContext().getResources(), R.drawable.mask_circle_300), null, WordMapFragment.this.requireContext().getFilesDir().getPath() + "/input.txt");
-                    handler.post(() -> ((ImageView) MainActivity.currVisualizationFrag.requireView().findViewById(R.id.word_map_img)).setImageBitmap(word_map_img));
+                    handler.post(() -> {
+                        ((ImageView) MainActivity.currVisualizationFrag.requireView().findViewById(R.id.word_map_img)).setImageBitmap(word_map_img);
+                        this.requireView().findViewById(R.id.progressBar).setVisibility(GONE);
+                        this.requireView().findViewById(R.id.textView).setVisibility(GONE);
+                        Toast.makeText(view.getContext(), "Finished!", Toast.LENGTH_LONG).show();
+                    });
                 });
-                confirmButton.setVisibility(View.GONE);
+                confirmButton.setVisibility(GONE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
