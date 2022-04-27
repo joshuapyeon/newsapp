@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.wntprototype.R;
 
@@ -109,7 +110,9 @@ public class ListViewAdapter extends BaseExpandableListAdapter implements Sharea
 
         keyphrase.setTypeface(null, Typeface.BOLD_ITALIC);
 
-        keyphrase.setTextColor(Color.BLUE);
+        keyphrase.setTextSize(16);
+
+        keyphrase.setTextColor(Color.BLACK);
         return view ;
     }
 
@@ -124,6 +127,8 @@ public class ListViewAdapter extends BaseExpandableListAdapter implements Sharea
         NewsData selectedArticle = articleMap.get(titleList.get(i)).get(i1);
         String articleTitle = selectedArticle.title;
         articleSpace.setText(articleTitle);
+        articleSpace.setTextSize(15);
+        articleSpace.setTextColor(Color.rgb(10, 20, 30));
 
         if(selectedArticle.hasUrlToImage()) {
             Executor executor = Executors.newSingleThreadExecutor();
@@ -151,15 +156,24 @@ public class ListViewAdapter extends BaseExpandableListAdapter implements Sharea
         articleSpace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar sb = Snackbar.make(view, selectedArticle.title, Snackbar.LENGTH_SHORT);
+                if(selectedArticle.hasUrl()) {
+                    String URL = selectedArticle.url;
+                    Intent openBrowser = new Intent();
+                    openBrowser.setAction(Intent.ACTION_VIEW);
+                    openBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
+                    openBrowser.setData(Uri.parse(URL));
+                    viewGroup.getContext().startActivity(openBrowser);
+                }
+                else {
+                    Snackbar sb = Snackbar.make(view, "URL Unavailable", Snackbar.LENGTH_SHORT);
+                    sb.show();
+                }
+                /*Snackbar sb = Snackbar.make(view, selectedArticle.title, Snackbar.LENGTH_SHORT);
                 sb.setAction("OPEN LINK", view1 -> {
                     if(selectedArticle.hasUrl()) {
                         String URL = selectedArticle.url;
                         Intent openBrowser = new Intent();
-                        openBrowser.setAction(Intent.ACTION_VIEW);
-                        openBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
-                        openBrowser.setData(Uri.parse(URL));
-                        viewGroup.getContext().startActivity(openBrowser);
+
                     }
                     else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(viewGroup.getContext());
@@ -168,7 +182,7 @@ public class ListViewAdapter extends BaseExpandableListAdapter implements Sharea
                         urlLink.show();
                     }
                 });
-                sb.show();
+                sb.show();*/
             }
         });
 
