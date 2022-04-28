@@ -34,7 +34,7 @@ public class WordCloudGenerator {
     private static final String[] stopwords = { "and", "that", "there", "that's", "there's", "don't", "have", "the", "but",
             "for", "into", "out", "be", "you", "are", "they", "their", "your", "yours", "theirs", "his", "hers", "he",
             "she", "her", "him", "them", "with", "what", "after", "over", "let", "may", "it's", "its", "where", "about",
-            "had", "from" };
+            "had", "from", "new", "news" };
 
     private final Bitmap outputImage;
     private final int[] maxwidthrow;
@@ -122,10 +122,9 @@ public class WordCloudGenerator {
         boolean flag = true;
         do {
             for (Entry<String, Integer> e : wordsList)
-                if (!wc.paintWord(wc.graphics, e.getKey(), (int) ((double) e.getValue() * multiplier)))
+                if (!wc.paintWord(wc.graphics, e.getKey(), Math.min(maxfsize, (int) ((double) e.getValue() * multiplier))))
                     flag = false;
         } while (flag);
-        //wc.writeImage(outputPath);
         System.out.println("Done!");
         return wc.outputImage;
     }
