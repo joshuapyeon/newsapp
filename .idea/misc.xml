@@ -38,6 +38,8 @@
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.32592592592592595" />
         <entry key="app/src/main/res/layout/fragment_word_map.xml" value="0.23229166666666667" />
         <entry key="app/src/main/res/layout/list_row.xml" value="0.1702127659574468" />
+        <entry key="app/src/main/res/layout/listtitle.xml" value="0.4244791666666667" />
+        <entry key="app/src/main/res/layout/popup_graphview.xml" value="0.4244791666666667" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.32592592592592595" />
       </map>
     </option>
