@@ -32,6 +32,7 @@ public class ListFragment extends Fragment implements Shareable {
     DataCache cache = DataCache.getCache();
     List<TrendingContent> searchList;
     List<String> titleList = new ArrayList<>();
+    List<String> titleImage = new ArrayList<>();
     private FragmentListBinding binding;
     ExpandableListView listFormat;
     ArrayAdapter<String> phraseAdapter;
@@ -51,6 +52,10 @@ public class ListFragment extends Fragment implements Shareable {
             //Get the title word/phrase and put it and it's associated articles in a map.
             for (TrendingContent api : searchList) {
                 titleList.add(api.getPhrase());
+                if(api.getUrlToImage() != "")
+                    titleImage.add(api.getUrlToImage());
+                else
+                    titleImage.add("");
                 if(api.hasArticles())
                     articleMap.put(api.getPhrase(), api.getSources());
                 else
@@ -58,7 +63,7 @@ public class ListFragment extends Fragment implements Shareable {
                     });
 
             }
-            newsAdapter = new ListViewAdapter(titleList, articleMap, R.layout.list_row);
+            newsAdapter = new ListViewAdapter(titleList, titleImage, articleMap, R.layout.list_row);
             listFormat.setAdapter(newsAdapter);
         }
 

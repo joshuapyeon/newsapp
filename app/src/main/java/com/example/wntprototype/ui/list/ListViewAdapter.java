@@ -13,13 +13,16 @@ import java.net.URL;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.wntprototype.R;
 
 
@@ -34,12 +37,14 @@ import java.util.concurrent.Executors;
 
 public class ListViewAdapter extends BaseExpandableListAdapter implements Shareable {
     List<String> titleList;
+    List<String> titleImage;
     HashMap<String, List<NewsData>> articleMap;
     int articleLayout;
-    public ListViewAdapter(List<String> titleList, HashMap<String, List<NewsData>> articleMap, int layout) {
+    public ListViewAdapter(List<String> titleList, List<String> titleImage, HashMap<String, List<NewsData>> articleMap, int layout) {
         this.titleList = titleList;
         this.articleMap = articleMap;
         this.articleLayout = layout;
+        this.titleImage = titleImage;
     }
 
     /**
@@ -99,18 +104,58 @@ public class ListViewAdapter extends BaseExpandableListAdapter implements Sharea
 
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        view = LayoutInflater.from(viewGroup.getContext()).inflate(android.R.layout.simple_expandable_list_item_1, viewGroup, false);
+        view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listtitle, viewGroup, false);
 
-        TextView keyphrase = view.findViewById(android.R.id.text1);
+        TextView keyphrase = view.findViewById(R.id.titleName);
 
         String title = titleList.get(i);
 
         keyphrase.setText(title);
 
-        keyphrase.setTypeface(null, Typeface.BOLD_ITALIC);
+        keyphrase.setTypeface(null, Typeface.BOLD);
 
-        keyphrase.setTextColor(Color.BLUE);
-        return view ;
+        keyphrase.setTextSize(17);
+
+        keyphrase.setTextColor(Color.BLACK);
+
+        ImageView ig = viewGroup.getRootView().findViewById(R.id.image1);
+        String image = titleImage.get(i);
+        //og.d("imageURL:", image);
+        if(!image.equals(""))
+            Glide.with(view).load(image).into(ig);
+        /*if(image != null) {
+            Executor executor = Executors.newSingleThreadExecutor();
+            Handler handler = new Handler(Looper.getMainLooper());
+            final Bitmap[] thumbnail = {null};
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    String imageURL = image;
+                    try{
+                        InputStream in = new URL(imageURL).openStream();
+                        thumbnail[0] = BitmapFactory.decodeStream(in);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ig.setImageBitmap(thumbnail[0]);
+                            }
+                        });
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }*/
+        return view;
+    }
+
+    private NewsData findArticle(String title) {
+        List<NewsData> toFind = articleMap.get(title);
+        for(NewsData nd : toFind) {
+            if(nd.url.equals(title))
+                return nd;
+        }
+        return null;
     }
 
     @Override
@@ -124,8 +169,11 @@ public class ListViewAdapter extends BaseExpandableListAdapter implements Sharea
         NewsData selectedArticle = articleMap.get(titleList.get(i)).get(i1);
         String articleTitle = selectedArticle.title;
         articleSpace.setText(articleTitle);
+        articleSpace.setTextSize(16);
+        articleSpace.setTypeface(null,Typeface.ITALIC);
+        articleSpace.setTextColor(Color.rgb(128,137,138));
 
-        if(selectedArticle.hasUrlToImage()) {
+        /*if(selectedArticle.hasUrlToImage()) {
             Executor executor = Executors.newSingleThreadExecutor();
             Handler handler = new Handler(Looper.getMainLooper());
             final Bitmap[] thumbnail = {null};
@@ -147,28 +195,25 @@ public class ListViewAdapter extends BaseExpandableListAdapter implements Sharea
                     }
                 }
             });
-        }
+        }*/
         articleSpace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar sb = Snackbar.make(view, selectedArticle.title, Snackbar.LENGTH_SHORT);
-                sb.setAction("OPEN LINK", view1 -> {
-                    if(selectedArticle.hasUrl()) {
-                        String URL = selectedArticle.url;
-                        Intent openBrowser = new Intent();
-                        openBrowser.setAction(Intent.ACTION_VIEW);
-                        openBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
-                        openBrowser.setData(Uri.parse(URL));
-                        viewGroup.getContext().startActivity(openBrowser);
-                    }
-                    else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(viewGroup.getContext());
-                        builder.setMessage("URL Unavailable");
-                        AlertDialog urlLink = builder.create();
-                        urlLink.show();
-                    }
-                });
-                sb.show();
+                if(selectedArticle.hasUrl()) {
+                    Toast toast = new Toast(viewGroup.getContext());
+                    toast.setText("Opening URL!");
+                    toast.show();
+                    String URL = selectedArticle.url;
+                    Intent openBrowser = new Intent();
+                    openBrowser.setAction(Intent.ACTION_VIEW);
+                    openBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
+                    openBrowser.setData(Uri.parse(URL));
+                    viewGroup.getContext().startActivity(openBrowser);
+                }
+                else {
+                    Snackbar sb = Snackbar.make(view, "URL Unavailable", Snackbar.LENGTH_SHORT);
+                    sb.show();
+                }
             }
         });
 
