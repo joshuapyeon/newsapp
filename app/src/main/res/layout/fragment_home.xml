@@ -8,14 +8,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/purple_200">
 
         <TextView
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Welcome To Trending Tracker!"
-            android:background="@color/purple_500"
+            android:background="@color/purple_200"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="45dp"
@@ -30,7 +31,7 @@
             android:id="@+id/subtext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/purple_500"
+            android:background="@color/purple_200"
             android:text="Select the 'search options' dropdown to get started!"
             android:textAlignment="center"
             android:layout_marginTop="30dp"
