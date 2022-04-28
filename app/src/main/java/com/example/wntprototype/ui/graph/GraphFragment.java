@@ -78,7 +78,7 @@ public class GraphFragment extends Fragment implements Shareable {
 
     private int XMAX = 5;
 
-    private final String[] noWords = {"I", "The", "As", "For", "St.", "My", "A", "Your", "Yours", "That", "That's", "Why", "What", "With"};
+    //private final String[] noWords = {"I", "The", "As", "For", "St.", "My", "A", "Your", "Yours", "That", "That's", "Why", "What", "With"};
 
     /**
      * Creates the binding for the
@@ -155,15 +155,22 @@ public class GraphFragment extends Fragment implements Shareable {
         xAxis.setGranularityEnabled(true);
         xAxis.setTextSize(12f);
 
-
         YAxis yLeft = barChart.getAxisLeft(); //get the left-side of the y-axis
         yLeft.setGranularity(5f); //every five units, a numeric label will be given
         yLeft.setAxisMinimum(0); //minimum y-value is 0
+        //yLeft.setTextSize(14f); --> making a bigger text size is going to make the graph smaller
 
 
         YAxis yRight = barChart.getAxisRight(); //get the right-side of the y-axis
         yRight.setGranularity(5f); //every five units, a numeric label will be given
         yRight.setAxisMinimum(0); //minimum y-value is 0
+        //yRight.setTextSize(14f); --> making a bigger text size is going to make the graph smaller
+
+        //this removes the inner gridlines of the bar chart for more clear visibility
+        barChart.getXAxis().setDrawGridLines(false);
+        barChart.getAxisLeft().setDrawGridLines(false);
+        barChart.getAxisRight().setDrawGridLines(false);
+
 
     }
 

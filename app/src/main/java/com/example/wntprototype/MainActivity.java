@@ -27,6 +27,7 @@ import com.example.wntprototype.APIWrappers.APISearch;
 import com.example.wntprototype.APIWrappers.DataManager;
 import com.example.wntprototype.APIWrappers.DataSource;
 import com.example.wntprototype.databinding.ActivityMainBinding;
+import com.example.wntprototype.ui.HomeFragment;
 import com.example.wntprototype.ui.Shareable;
 import com.example.wntprototype.ui.graph.GraphFragment;
 import com.example.wntprototype.ui.list.ListFragment;
@@ -127,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
             builder.setTitle("Choose Visualization");
             builder.setCancelable(false);
             builder.setSingleChoiceItems(visualizations, currVisualization, (v1, v2) -> currVisualization = v2);
-            builder.setPositiveButton("OK", (v1, v2) -> replaceFragment(getCurrVisualization()));
+            builder.setPositiveButton("OK", (v1, v2) -> replaceFragment((cache.hasData() ? getCurrVisualization(): new HomeFragment())));
             builder.show();
         });
 
@@ -156,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(Intent.createChooser(sharingIntent, "Share using"));
             }
         });
+        replaceFragment(new HomeFragment());
     }
 
     /**
@@ -202,9 +204,11 @@ public class MainActivity extends AppCompatActivity {
         //Lets the user know if the search was successful
         if (!cache.hasData()) {
             Toast.makeText(this.getBaseContext(), "Search failed", Toast.LENGTH_LONG).show();
+            replaceFragment(new HomeFragment());
         } else {
             ((TextInputEditText) findViewById(R.id.keyword_text)).setText("");
             Toast.makeText(this.getBaseContext(), "Search Succeeded", Toast.LENGTH_SHORT).show();
+            replaceFragment(getCurrVisualization());
         }
 
         //Hides the Search View and updates the current fragment
@@ -215,8 +219,6 @@ public class MainActivity extends AppCompatActivity {
             this.findViewById(R.id.generate_button).setVisibility(View.VISIBLE);
         if (this.findViewById(R.id.word_map_img) != null)
             ((ImageView) this.findViewById(R.id.word_map_img)).setImageBitmap(null);
-
-        replaceFragment(getCurrVisualization());
     }
 
     /**
