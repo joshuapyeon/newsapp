@@ -65,7 +65,7 @@ public class WordMapFragment extends Fragment implements Shareable {
                 this.requireView().findViewById(R.id.progressBar).setVisibility(VISIBLE);
                 this.requireView().findViewById(R.id.textView).setVisibility(VISIBLE);
                 executor.execute(() -> {
-                    word_map_img = WordCloudGenerator.generateWordCloud(0xFF000000, 0xFF000000, 50, 35, 2, 100, 2, BitmapFactory.decodeResource(WordMapFragment.this.requireContext().getResources(), R.drawable.mask_circle_300), null, WordMapFragment.this.requireContext().getFilesDir().getPath() + "/input.txt");
+                    word_map_img = WordCloudGenerator.generateWordCloud(0xFF000000, 0xFF000000, 50, 35, 2, 100, 2, BitmapFactory.decodeResource(WordMapFragment.this.requireContext().getResources(), R.drawable.mask_circle_300), null, WordMapFragment.this.requireContext().getFilesDir().getPath() + "/input.txt", DataCache.getCache().getKeywordSearched());
                     handler.post(() -> {
                         ((ImageView) MainActivity.currVisualizationFrag.requireView().findViewById(R.id.word_map_img)).setImageBitmap(word_map_img);
                         this.requireView().findViewById(R.id.progressBar).setVisibility(GONE);

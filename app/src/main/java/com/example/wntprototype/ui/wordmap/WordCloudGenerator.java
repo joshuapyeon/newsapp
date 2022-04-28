@@ -34,7 +34,7 @@ public class WordCloudGenerator {
     private static final String[] stopwords = { "and", "that", "there", "that's", "there's", "don't", "have", "the", "but",
             "for", "into", "out", "be", "you", "are", "they", "their", "your", "yours", "theirs", "his", "hers", "he",
             "she", "her", "him", "them", "with", "what", "after", "over", "let", "may", "it's", "its", "where", "about",
-            "had", "from", "new", "news" };
+            "had", "from", "new", "news", "official", "video", "says", "how", "more", "back" };
 
     private final Bitmap outputImage;
     private final int[] maxwidthrow;
@@ -55,7 +55,7 @@ public class WordCloudGenerator {
     private static Bitmap maskImage = null;
     private static Bitmap colorImage = null;
 
-    public static Bitmap generateWordCloud(int mrgb, int brgb, int vpref, int fstep, int minfsize, int maxfsize, int wmargin, Bitmap maskImg, Bitmap colorImg, String inputPth) {
+    public static Bitmap generateWordCloud(int mrgb, int brgb, int vpref, int fstep, int minfsize, int maxfsize, int wmargin, Bitmap maskImg, Bitmap colorImg, String inputPth, String keyword) {
         MASKRGB = mrgb;
         PAINTRGB = brgb;
         vertical_preference = vpref;
@@ -85,6 +85,7 @@ public class WordCloudGenerator {
         }
 
         double largest = 0.0;
+        System.out.println("Keyword: " + keyword);
         while (s != null && s.hasNextLine()) {
             for (String str : s.nextLine().split(" ")) {
                 str = str.trim();
@@ -101,6 +102,9 @@ public class WordCloudGenerator {
                 for (String rm : stopwords)
                     if (str.toLowerCase().equals(rm))
                         flag = true;
+
+                if (!keyword.isEmpty() && str.equalsIgnoreCase(keyword))
+                    flag = true;
 
                 if (str.length() >= 3 && !flag) {
                     int size = 0;
