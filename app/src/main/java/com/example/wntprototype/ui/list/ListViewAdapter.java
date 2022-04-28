@@ -118,34 +118,11 @@ public class ListViewAdapter extends BaseExpandableListAdapter implements Sharea
 
         keyphrase.setTextColor(Color.BLACK);
 
-        ImageView ig = viewGroup.getRootView().findViewById(R.id.image1);
+        ImageView ig = view.findViewById(R.id.image1);
         String image = titleImage.get(i);
-        //og.d("imageURL:", image);
         if(!image.equals(""))
             Glide.with(view).load(image).into(ig);
-        /*if(image != null) {
-            Executor executor = Executors.newSingleThreadExecutor();
-            Handler handler = new Handler(Looper.getMainLooper());
-            final Bitmap[] thumbnail = {null};
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    String imageURL = image;
-                    try{
-                        InputStream in = new URL(imageURL).openStream();
-                        thumbnail[0] = BitmapFactory.decodeStream(in);
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                ig.setImageBitmap(thumbnail[0]);
-                            }
-                        });
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }*/
+
         return view;
     }
 
