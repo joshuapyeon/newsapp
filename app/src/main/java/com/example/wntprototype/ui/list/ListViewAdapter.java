@@ -120,7 +120,7 @@ public class ListViewAdapter extends BaseExpandableListAdapter implements Sharea
 
         ImageView ig = viewGroup.getRootView().findViewById(R.id.image1);
         String image = titleImage.get(i);
-        Log.d("imageURL:", image);
+        //og.d("imageURL:", image);
         if(!image.equals(""))
             Glide.with(view).load(image).into(ig);
         /*if(image != null) {
