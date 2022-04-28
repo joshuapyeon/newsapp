@@ -141,8 +141,6 @@ public class ListViewAdapter extends BaseExpandableListAdapter implements Sharea
 
         TextView articleSpace = view.findViewById(R.id.txtName);
 
-        ImageView imageView = view.findViewById(R.id.image);
-
         NewsData selectedArticle = articleMap.get(titleList.get(i)).get(i1);
         String articleTitle = selectedArticle.title;
         articleSpace.setText(articleTitle);
@@ -150,29 +148,6 @@ public class ListViewAdapter extends BaseExpandableListAdapter implements Sharea
         articleSpace.setTypeface(null,Typeface.ITALIC);
         articleSpace.setTextColor(Color.rgb(128,137,138));
 
-        /*if(selectedArticle.hasUrlToImage()) {
-            Executor executor = Executors.newSingleThreadExecutor();
-            Handler handler = new Handler(Looper.getMainLooper());
-            final Bitmap[] thumbnail = {null};
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    String imageURL = selectedArticle.urlToImage;
-                    try{
-                       InputStream in = new URL(imageURL).openStream();
-                       thumbnail[0] = BitmapFactory.decodeStream(in);
-                       handler.post(new Runnable() {
-                           @Override
-                           public void run() {
-                               imageView.setImageBitmap(thumbnail[0]);
-                           }
-                       });
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }*/
         articleSpace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

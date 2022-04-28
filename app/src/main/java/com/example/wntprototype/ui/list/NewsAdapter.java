@@ -56,12 +56,9 @@ public class NewsAdapter extends ArrayAdapter<NewsData> {
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
         convertView = layoutInflater.inflate(mResource, parent, false);
 
-        iv = convertView.findViewById(R.id.image);
         tv = convertView.findViewById(R.id.txtName);
         Drawable parsedImage = urlToInt(getItem(position));
         tv.setText(getItem(position).title);
-        if(parsedImage != null) iv.setImageDrawable(parsedImage);
-        else Log.d("parsedImage", "IS NULL!");
         return convertView;
     }
 

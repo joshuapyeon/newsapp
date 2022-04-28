@@ -29,14 +29,37 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ListFragment extends Fragment implements Shareable {
+    /**
+     * The cache that holds the data.
+     */
     DataCache cache = DataCache.getCache();
+    /**
+     * The list of trending content that holds the data of the cache
+     */
     List<TrendingContent> searchList;
+    /**
+     * The list of titles for each article
+     */
     List<String> titleList = new ArrayList<>();
+    /**
+     * The list of images for each article (if any)
+     */
     List<String> titleImage = new ArrayList<>();
+    /**
+     * THe fragment list binding
+     */
     private FragmentListBinding binding;
+    /**
+     * The expandable list view
+     */
     ExpandableListView listFormat;
-    ArrayAdapter<String> phraseAdapter;
+    /**
+     * The HashMap that maps a phrase to a list of associated articles
+     */
     HashMap<String, List<NewsData>> articleMap = new HashMap<String, List<NewsData>>();
+    /**
+     * The adapter for the listview
+     */
     ListViewAdapter newsAdapter;
 
 
@@ -51,14 +74,12 @@ public class ListFragment extends Fragment implements Shareable {
 
             //Get the title word/phrase and put it and it's associated articles in a map.
             for (TrendingContent api : searchList) {
-                titleList.add(api.getPhrase());
-                if(api.getUrlToImage() != "")
-                    titleImage.add(api.getUrlToImage());
-                else
-                    titleImage.add("");
-                if(api.hasArticles())
+                titleList.add(api.getPhrase()); //Add the title phrase
+                titleImage.add(api.getUrlToImage());    //Add the tile image url
+
+                if(api.hasArticles())   //Map the title phrase to the associated sources
                     articleMap.put(api.getPhrase(), api.getSources());
-                else
+                else    //If not sources available, then map it to an empty list
                     articleMap.put(api.getPhrase(), new ArrayList<NewsData>() {
                     });
 
